@@ -1,0 +1,11 @@
+# virtuenv
+.venv/
+# Byte‑compiled / caches
+__pycache__/
+*.py[cod]
+# macOS
+.DS_Store
+# Logs
+*.log
+# VSCode
+.vscode/
