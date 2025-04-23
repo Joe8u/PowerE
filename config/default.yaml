@@ -1,0 +1,12 @@
+# config/default.yaml
+data:
+  raw_dir:      ${DATA_RAW_DIR}
+  proc_static:  ${DATA_PROCESSED_STATIC}
+  proc_dynamic: ${DATA_PROCESSED_DYNAMIC}
+
+dash:
+  host: ${DASH_HOST}
+  port: ${DASH_PORT}
+
+api_tokens:
+  entsoe: ${ENTSOE_API_TOKEN}
