@@ -84,7 +84,7 @@ def create_dash_app() -> Dash:
     )
 
     # === Callbacks registrieren ===
-    from src.dashboard.callbacks import register_callbacks
+    from powere.dashboard.callbacks import register_callbacks
 
     register_callbacks(app)
 

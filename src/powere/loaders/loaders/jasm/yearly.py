@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.powere.utils.settings import DATA_PROC_STATIC
+from powere.powere.utils.settings import DATA_PROC_STATIC
 
 
 def load_jasm_year(year: int) -> pd.DataFrame:

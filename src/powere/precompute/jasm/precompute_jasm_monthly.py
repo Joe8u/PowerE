@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.powere.loaders.jasm.jasm_loader import build_month_profile
+from powere.powere.loaders.jasm.jasm_loader import build_month_profile
 
 # Diese Skripte sollen in <project_root>/src/precompute/jasm/ liegen.
 # Wir heben daher dreimal .parents nach oben, um auf project_root zu kommen:

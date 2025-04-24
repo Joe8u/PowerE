@@ -2,12 +2,12 @@
 
 from dash import Input, Output
 
-from src.dashboard.app import app
+from powere.dashboard.app import app
 # hier weitere Loader importieren:
-from src.loaders.jasm.yearly import load_jasm_yearly
+from powere.loaders.jasm.yearly import load_jasm_yearly
 
-# from src.loaders.jasm.monthly import load_jasm_monthly
-# from src.loaders.market.yearly import load_market_yearly
+# from powere.loaders.jasm.monthly import load_jasm_monthly
+# from powere.loaders.market.yearly import load_market_yearly
 # …
 
 

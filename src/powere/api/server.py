@@ -5,7 +5,7 @@ from fastapi.middleware.wsgi import WSGIMiddleware
 from fastapi.responses import RedirectResponse
 
 # 1) Deinen Dash-App importieren
-from src.powere.dashboard.app import app as dash_app
+from powere.powere.dashboard.app import app as dash_app
 
 # 2) FastAPI-Instanz anlegen
 app = FastAPI(
@@ -27,7 +27,7 @@ app.mount("/dashboard", WSGIMiddleware(dash_app.server))
 # 5) (Optional) hier kannst du später deine API-Router mounten,
 #    sobald du sie unter src/api/routers/* implementiert hast:
 #
-# from src.api.routers import jasm, market, tertiary, survey
+# from powere.api.routers import jasm, market, tertiary, survey
 # app.include_router(jasm.router,     prefix="/jasm",     tags=["jasm"])
 # app.include_router(market.router,   prefix="/market",   tags=["market"])
 # app.include_router(tertiary.router, prefix="/tertiary", tags=["tertiary"])
