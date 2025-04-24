@@ -1,13 +1,15 @@
-#/Users/jonathan/Documents/GitHub/PowerE/src/powere/loaders/jasm/jasm_loader.py
-import pandas as pd
+# /Users/jonathan/Documents/GitHub/PowerE/src/powere/loaders/jasm/jasm_loader.py
 import calendar
 from pathlib import Path
+
+import pandas as pd
+
 from powere.utils.settings import DATA_RAW_DIR
 
 
 def load_jasm_day(year: int, month: int, day_type: str = "weekday") -> pd.DataFrame:
     """
-    Lädt das stündliche Appliance‑Profil für den 1. Tag eines gegebenen Monats und 
+    Lädt das stündliche Appliance‑Profil für den 1. Tag eines gegebenen Monats und
     interpoliert linear auf ein 15‑Minuten‑Raster.
     day_type in {"weekday","weekend"}.
     """
@@ -19,30 +21,20 @@ def load_jasm_day(year: int, month: int, day_type: str = "weekday") -> pd.DataFr
     df = pd.read_csv(
         path,
         sep=";",
-        usecols=["Year", "Month", "Day type", "Time", "Appliances", "Power (MW)"]
+        usecols=["Year", "Month", "Day type", "Time", "Appliances", "Power (MW)"],
     )
     df = df[
-        (df["Year"] == year) &
-        (df["Month"] == month) &
-        (df["Day type"] == day_type)
+        (df["Year"] == year) & (df["Month"] == month) & (df["Day type"] == day_type)
     ]
 
     # 2) Timestamp bauen (Tag=1 als Platzhalter) und tz‑lokalisieren
-    base = pd.to_datetime({
-        "year":  df["Year"],
-        "month": df["Month"],
-        "day":   1
-    })
-    df["timestamp"] = (
-        base + pd.to_timedelta(df["Time"])
-    ).dt.tz_localize("Europe/Zurich")
+    base = pd.to_datetime({"year": df["Year"], "month": df["Month"], "day": 1})
+    df["timestamp"] = (base + pd.to_timedelta(df["Time"])).dt.tz_localize(
+        "Europe/Zurich"
+    )
 
     # 3) Pivot: index=timestamp, columns=Appliances, Werte=Power (MW)
-    pivot = df.pivot(
-        index="timestamp",
-        columns="Appliances",
-        values="Power (MW)"
-    )
+    pivot = df.pivot(index="timestamp", columns="Appliances", values="Power (MW)")
 
     # 4) MW → kW und auf 15‑Minuten‑Raster hochrechnen (verwende "min" statt veraltetem "T")
     pivot = pivot.mul(1_000).resample("15min").interpolate(method="linear")
@@ -50,7 +42,9 @@ def load_jasm_day(year: int, month: int, day_type: str = "weekday") -> pd.DataFr
     return pivot
 
 
-def build_month_profile(year: int, month: int, appliances: list[str] = None) -> pd.DataFrame:
+def build_month_profile(
+    year: int, month: int, appliances: list[str] = None
+) -> pd.DataFrame:
     """
     Erzeugt ein vollständiges Monats‑Profil für jeden Kalendertag:
       – Unterscheidung Werktag (weekday) vs. Wochenende (weekend)
@@ -76,4 +70,3 @@ def build_month_profile(year: int, month: int, appliances: list[str] = None) -> 
 
     # Alles zusammenfügen und nach Index sortieren
     return pd.concat(frames).sort_index()
-

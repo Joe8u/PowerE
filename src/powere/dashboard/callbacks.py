@@ -1,16 +1,18 @@
 # src/dashboard/callbacks.py
 
-from dash import Input, Output
 from typing import Any, Dict
+
 import pandas as pd
+from dash import Input, Output
 
 # Loader-Funktionen importieren (Signaturen siehe unten!)
-from src.loaders.jasm.daily   import load_jasm_day
-from src.loaders.jasm.weekly  import load_jasm_week
+from src.loaders.jasm.daily import load_jasm_day
 from src.loaders.jasm.monthly import load_jasm_month
-from src.loaders.jasm.yearly  import load_jasm_year
+from src.loaders.jasm.weekly import load_jasm_week
+from src.loaders.jasm.yearly import load_jasm_year
 
 # (Analog später für market, tertiary, survey …)
+
 
 def register_callbacks(app: Any) -> None:
     """
@@ -23,10 +25,10 @@ def register_callbacks(app: Any) -> None:
     #   - others: load_X_day/week/month(year: int, start: str, end: str) -> DataFrame
     loaders: Dict[str, Dict[str, Any]] = {
         "jasm": {
-            "daily":   load_jasm_day,
-            "weekly":  load_jasm_week,
+            "daily": load_jasm_day,
+            "weekly": load_jasm_week,
             "monthly": load_jasm_month,
-            "yearly":  load_jasm_year,
+            "yearly": load_jasm_year,
         },
         # "market": { ... },
         # "tertiary": { ... },
@@ -35,9 +37,9 @@ def register_callbacks(app: Any) -> None:
 
     @app.callback(
         Output("appliance-selector", "options"),
-        Input("source-tabs",    "value"),
-        Input("year-selector",  "value"),
-        Input("granularity",    "value"),
+        Input("source-tabs", "value"),
+        Input("year-selector", "value"),
+        Input("granularity", "value"),
     )
     def update_appliances(source: str, year: int, granularity: str):
         """
@@ -58,19 +60,21 @@ def register_callbacks(app: Any) -> None:
 
     @app.callback(
         Output("main-graph", "figure"),
-        Input("source-tabs",          "value"),
-        Input("granularity",          "value"),
-        Input("year-selector",        "value"),
-        Input("appliance-selector",   "value"),
-        Input("date-range",           "start_date"),
-        Input("date-range",           "end_date"),
+        Input("source-tabs", "value"),
+        Input("granularity", "value"),
+        Input("year-selector", "value"),
+        Input("appliance-selector", "value"),
+        Input("date-range", "start_date"),
+        Input("date-range", "end_date"),
     )
-    def update_graph(source: str,
-                     granularity: str,
-                     year: int,
-                     selected_apps: list[str],
-                     start: str,
-                     end: str) -> dict:
+    def update_graph(
+        source: str,
+        granularity: str,
+        year: int,
+        selected_apps: list[str],
+        start: str,
+        end: str,
+    ) -> dict:
         """
         Lädt die Daten per Loader, filtert nach Datum & Apps
         und baut die Plotly-Figure auf.
@@ -100,7 +104,7 @@ def register_callbacks(app: Any) -> None:
             "layout": {
                 "title": f"{source.upper()} | {granularity} | {year}",
                 "xaxis": {"title": "Zeit"},
-                "yaxis": {"title": "Leistung / Wert"}
-            }
+                "yaxis": {"title": "Leistung / Wert"},
+            },
         }
         return fig

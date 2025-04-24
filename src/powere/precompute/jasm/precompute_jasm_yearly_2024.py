@@ -1,15 +1,32 @@
 #!/usr/bin/env python3
 # /Users/jonathan/Documents/GitHub/PowerE/src/powere/precompute/jasm/precompute_jasm_yearly_2024.py
 
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
 
 TARGET_YEAR = 2024
 # drei Ebenen hoch, um auf project root zu kommen
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
-IN_DIR = PROJECT_ROOT / "data" / "processed" / "static" / "jasm" / str(TARGET_YEAR) / "monthly"
-OUT_DIR = PROJECT_ROOT / "data" / "processed" / "static" / "jasm" / str(TARGET_YEAR) / "yearly"
+IN_DIR = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "static"
+    / "jasm"
+    / str(TARGET_YEAR)
+    / "monthly"
+)
+OUT_DIR = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "static"
+    / "jasm"
+    / str(TARGET_YEAR)
+    / "yearly"
+)
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # 1) Alle 12 Monats-Profile einlesen und Index in UTC‐DatetimeIndex umwandeln

@@ -1,4 +1,4 @@
-#/Users/jonathan/Documents/GitHub/PowerE/src/powere/precompute/jasm/precompute_jasm_monthly_2024.py
+# /Users/jonathan/Documents/GitHub/PowerE/src/powere/precompute/jasm/precompute_jasm_monthly_2024.py
 """
 precompute_jasm_monthly_2024.py
 
@@ -8,29 +8,41 @@ in data/processed/static/jasm/2024/monthly/.
 """
 
 import calendar
-import pandas as pd
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
+import pandas as pd
 
 # === 1) Konfiguration ===
 TARGET_YEAR = 2024
-BASE_YEAR1  = 2015
-BASE_YEAR2  = 2035
-APPS        = None  # None = alle Geräte; oder z.B. ["Dishwasher","Oven",...]
+BASE_YEAR1 = 2015
+BASE_YEAR2 = 2035
+APPS = None  # None = alle Geräte; oder z.B. ["Dishwasher","Oven",...]
 
 # Pfad zum Projekt-Root (hebt 3 Ebenen ab src/precompute/jasm)
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
-RAW_CSV = PROJECT_ROOT / "data" / "raw" / "jasm" / "Swiss_load_curves_2015_2035_2050.csv"
-OUT_DIR = PROJECT_ROOT / "data" / "processed" / "static" / "jasm" / str(TARGET_YEAR) / "monthly"
+RAW_CSV = (
+    PROJECT_ROOT / "data" / "raw" / "jasm" / "Swiss_load_curves_2015_2035_2050.csv"
+)
+OUT_DIR = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "static"
+    / "jasm"
+    / str(TARGET_YEAR)
+    / "monthly"
+)
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Einmaliges Einlesen des Roh-DataFrames
 raw_df = pd.read_csv(
     RAW_CSV,
     sep=";",
-    usecols=["Year", "Month", "Day type", "Time", "Appliances", "Power (MW)"]
+    usecols=["Year", "Month", "Day type", "Time", "Appliances", "Power (MW)"],
 )
+
 
 def get_daily_template(year: int, month: int, day_type: str) -> pd.DataFrame:
     """
@@ -39,9 +51,9 @@ def get_daily_template(year: int, month: int, day_type: str) -> pd.DataFrame:
     DataFrame zurück, dessen Index reine Uhrzeiten (time) sind.
     """
     df = raw_df[
-        (raw_df["Year"] == year) &
-        (raw_df["Month"] == month) &
-        (raw_df["Day type"] == day_type)
+        (raw_df["Year"] == year)
+        & (raw_df["Month"] == month)
+        & (raw_df["Day type"] == day_type)
     ].copy()
     if APPS is not None:
         df = df[df["Appliances"].isin(APPS)]
@@ -54,9 +66,7 @@ def get_daily_template(year: int, month: int, day_type: str) -> pd.DataFrame:
 
     # 3) tz-lokalisieren mit DST-Handling
     df["timestamp"] = df["timestamp"].dt.tz_localize(
-        "Europe/Zurich",
-        nonexistent="shift_forward",
-        ambiguous=True
+        "Europe/Zurich", nonexistent="shift_forward", ambiguous=True
     )
 
     # 4) Pivot: index=timestamp, columns=Appliances, Werte=Power (MW)
@@ -73,6 +83,7 @@ def get_daily_template(year: int, month: int, day_type: str) -> pd.DataFrame:
 
     return daily_15
 
+
 def build_2024_daily(month: int, day_type: str) -> pd.DataFrame:
     """
     Interpoliert das Tagesprofil für TARGET_YEAR zwischen BASE_YEAR1 und BASE_YEAR2.
@@ -81,6 +92,7 @@ def build_2024_daily(month: int, day_type: str) -> pd.DataFrame:
     tpl2 = get_daily_template(BASE_YEAR2, month, day_type)
     alpha = (TARGET_YEAR - BASE_YEAR1) / (BASE_YEAR2 - BASE_YEAR1)
     return tpl1 + alpha * (tpl2 - tpl1)
+
 
 # === 2) Hauptschleife: pro Monat vollständiges Profil bauen und speichern ===
 if __name__ == "__main__":
@@ -101,15 +113,14 @@ if __name__ == "__main__":
             tpl = tpl_we if is_weekend else tpl_wd
 
             # Vollständige Timestamps mit DST-Handling
-            idx = pd.DatetimeIndex([
-                pd.Timestamp.combine(date.date(), t)
-                    .tz_localize(
-                        "Europe/Zurich",
-                        nonexistent="shift_forward",
-                        ambiguous=True
+            idx = pd.DatetimeIndex(
+                [
+                    pd.Timestamp.combine(date.date(), t).tz_localize(
+                        "Europe/Zurich", nonexistent="shift_forward", ambiguous=True
                     )
-                for t in tpl.index
-            ])
+                    for t in tpl.index
+                ]
+            )
 
             df_day = pd.DataFrame(tpl.values, index=idx, columns=tpl.columns)
             frames.append(df_day)

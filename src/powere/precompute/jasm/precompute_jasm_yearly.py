@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#/Users/jonathan/Documents/GitHub/PowerE/src/powere/precompute/jasm/precompute_jasm_yearly.py
+# /Users/jonathan/Documents/GitHub/PowerE/src/powere/precompute/jasm/precompute_jasm_yearly.py
 """
 precompute_jasm_yearly_2024.py
 
@@ -8,8 +8,9 @@ den Durchschnitt je Appliance und Monat und speichert das Ergebnis
 als CSV in data/processed/static/jasm/2024/yearly/.
 """
 
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
 
 # === Konfiguration ===
 TARGET_YEAR = 2024
@@ -18,8 +19,24 @@ TARGET_YEAR = 2024
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 # Eingabe- und Ausgabe-Verzeichnisse
-IN_DIR  = PROJECT_ROOT / "data" / "processed" / "static" / "jasm" / str(TARGET_YEAR) / "monthly"
-OUT_DIR = PROJECT_ROOT / "data" / "processed" / "static" / "jasm" / str(TARGET_YEAR) / "yearly"
+IN_DIR = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "static"
+    / "jasm"
+    / str(TARGET_YEAR)
+    / "monthly"
+)
+OUT_DIR = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "static"
+    / "jasm"
+    / str(TARGET_YEAR)
+    / "yearly"
+)
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -42,7 +59,9 @@ def main():
     # Speichern
     out_file = OUT_DIR / f"appliance_yearly_avg_{TARGET_YEAR}.csv"
     yearly_avg.to_csv(out_file)
-    print(f"✅ Gespeichert: {out_file}  ({yearly_avg.shape[0]} Monate × {yearly_avg.shape[1]} Appliances)")
+    print(
+        f"✅ Gespeichert: {out_file}  ({yearly_avg.shape[0]} Monate × {yearly_avg.shape[1]} Appliances)"
+    )
 
 
 if __name__ == "__main__":

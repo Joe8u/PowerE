@@ -1,6 +1,9 @@
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
+
 from powere.utils.settings import DATA_RAW_DIR
+
 
 def load_jasm_day(year: int, month: int, day_type: str = "weekday") -> pd.DataFrame:
     """
@@ -13,29 +16,23 @@ def load_jasm_day(year: int, month: int, day_type: str = "weekday") -> pd.DataFr
     csv_path = Path(DATA_RAW_DIR) / "jasm" / "Swiss_load_curves_2015_2035_2050.csv"
 
     df = pd.read_csv(
-        csv_path, sep=";",
-        usecols=["Year", "Month", "Day type", "Time", "Appliances", "Power (MW)"]
+        csv_path,
+        sep=";",
+        usecols=["Year", "Month", "Day type", "Time", "Appliances", "Power (MW)"],
     )
     df = df[
-        (df["Year"] == year) &
-        (df["Month"] == month) &
-        (df["Day type"] == day_type)
+        (df["Year"] == year) & (df["Month"] == month) & (df["Day type"] == day_type)
     ].copy()
 
     # Basis-Zeitstempel (Tag 1 als Platzhalter)
-    base = pd.to_datetime({
-        "year":  df["Year"],
-        "month": df["Month"],
-        "day":   1
-    })
-    df["timestamp"] = (
-        base + pd.to_timedelta(df["Time"])
-    ).dt.tz_localize("Europe/Zurich")
+    base = pd.to_datetime({"year": df["Year"], "month": df["Month"], "day": 1})
+    df["timestamp"] = (base + pd.to_timedelta(df["Time"])).dt.tz_localize(
+        "Europe/Zurich"
+    )
 
     # Pivot und Umrechnung MW→kW
-    pivot = (
-        df.pivot(index="timestamp", columns="Appliances", values="Power (MW)")
-          .mul(1_000)
+    pivot = df.pivot(index="timestamp", columns="Appliances", values="Power (MW)").mul(
+        1_000
     )
 
     # — hier neu: stündliche Vollständigkeit erzwingen —

@@ -1,7 +1,10 @@
 # /Users/jonathan/Documents/GitHub/PowerE/src/powere/loaders/jasm/monthly.py
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
+
 from powere.utils.settings import DATA_PROC_STATIC
+
 
 def load_jasm_month(year: int, start: str = None, end: str = None) -> pd.DataFrame:
     """

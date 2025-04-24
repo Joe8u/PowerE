@@ -1,8 +1,8 @@
 # src/api/server.py
 
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
 from fastapi.middleware.wsgi import WSGIMiddleware
+from fastapi.responses import RedirectResponse
 
 # 1) Deinen Dash-App importieren
 from src.powere.dashboard.app import app as dash_app
@@ -11,13 +11,15 @@ from src.powere.dashboard.app import app as dash_app
 app = FastAPI(
     title="PowerE API",
     description="REST API + Dash-Dashboard in einem Server",
-    version="0.1.0"
+    version="0.1.0",
 )
+
 
 # 3) Root ("/") auf das Dash unter "/dashboard" weiterleiten
 @app.get("/", include_in_schema=False)
 def root() -> RedirectResponse:
     return RedirectResponse(url="/dashboard")
+
 
 # 4) Dash als WSGI-Middleware unter "/dashboard" mounten
 app.mount("/dashboard", WSGIMiddleware(dash_app.server))
@@ -33,9 +35,5 @@ app.mount("/dashboard", WSGIMiddleware(dash_app.server))
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(
-        "src.api.server:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True
-    )
+
+    uvicorn.run("src.api.server:app", host="0.0.0.0", port=8000, reload=True)
