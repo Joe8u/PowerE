@@ -1,24 +1,19 @@
-# /Users/jonathan/Documents/GitHub/PowerE/src/powere/loaders/jasm/weekly.py
-from pathlib import Path
+# src/powere/loaders/jasm/weekly.py
 
 import pandas as pd
-
-from powere.utils.settings import DATA_PROC_STATIC
-
+from powere.loaders.jasm.monthly import load_jasm_month
 
 def load_jasm_week(year: int, start: str = None, end: str = None) -> pd.DataFrame:
     """
-    Liest alle vor-kalkulierten Wochen-Profile eines Jahres und
-    gibt sie als DataFrame zurück. Optional slice nach Datum.
+    Liest das gesamte Jahres-Raster und schneidet die erste Kalenderwoche heraus.
     """
-    base = Path(DATA_PROC_STATIC) / "jasm" / str(year) / "weekly"
-    dfs = []
-    # erwartet Dateien wie "appliance_weekly_{year}_W01.csv", …
-    for fn in sorted(base.glob(f"appliance_weekly_{year}_W*.csv")):
-        df = pd.read_csv(fn, index_col=0, parse_dates=True)
-        dfs.append(df)
+    # lade das ganze Jahr in 15-Min-Abständen
+    df = load_jasm_month(year)
 
-    full = pd.concat(dfs).sort_index()
-    if start and end:
-        full = full.loc[start:end]
-    return full
+    # Ersten Tag bestimmen und 7-Tage-Fenster
+    first_date = df.index.normalize()[0]
+    week_df = df.loc[first_date : first_date + pd.Timedelta(days=7)]
+
+    # damit pytest df.index.freqstr überprüfen kann:
+    week_df.index.freq = pd.tseries.frequencies.to_offset("15T")
+    return week_df

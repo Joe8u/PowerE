@@ -1,50 +1,25 @@
-from pathlib import Path
+# src/powere/loaders/jasm/daily.py
 
 import pandas as pd
-
-from powere.utils.settings import DATA_RAW_DIR
-
+from pathlib import Path
+from powere.utils.settings import DATA_PROC_STATIC
 
 def load_jasm_day(year: int, month: int, day_type: str = "weekday") -> pd.DataFrame:
     """
-    Lädt ein 15-Min-Raster für einen einzigen Kalendertag:
-      – year, month, day_type in {"weekday","weekend"}.
-      – Index: tz-aware Timestamp über den ganzen Tag.
-      – Spalten: Appliances.
-      – Werte: Leistung in kW.
+    Lädt den 1. Kalendertag des Monats als 15-Min-Raster
+    aus der vor­berechneten Monats-CSV.
+    day_type wird im Moment ignoriert (alle Loader arbeiten nur mit
+    den vorgefertigten monthly-Daten, die bereits DST-handling enthalten).
     """
-    csv_path = Path(DATA_RAW_DIR) / "jasm" / "Swiss_load_curves_2015_2035_2050.csv"
+    # Datei mit dem 15-Min-Raster für den ganzen Monat
+    fpath = Path(DATA_PROC_STATIC) / "jasm" / str(year) / "monthly" / f"appliance_monthly_{year}_{month:02d}.csv"
+    df = pd.read_csv(fpath, index_col=0, parse_dates=True)
 
-    df = pd.read_csv(
-        csv_path,
-        sep=";",
-        usecols=["Year", "Month", "Day type", "Time", "Appliances", "Power (MW)"],
-    )
-    df = df[
-        (df["Year"] == year) & (df["Month"] == month) & (df["Day type"] == day_type)
-    ].copy()
+    # Ersten Tag herausschneiden
+    first_date = df.index.normalize()[0]
+    mask = (df.index >= first_date) & (df.index < first_date + pd.Timedelta(days=1))
+    day_df = df.loc[mask]
 
-    # Basis-Zeitstempel (Tag 1 als Platzhalter)
-    base = pd.to_datetime({"year": df["Year"], "month": df["Month"], "day": 1})
-    df["timestamp"] = (base + pd.to_timedelta(df["Time"])).dt.tz_localize(
-        "Europe/Zurich"
-    )
-
-    # Pivot und Umrechnung MW→kW
-    pivot = df.pivot(index="timestamp", columns="Appliances", values="Power (MW)").mul(
-        1_000
-    )
-
-    # — hier neu: stündliche Vollständigkeit erzwingen —
-    tz = pivot.index.tz
-    day0 = pivot.index[0].normalize()  # 2000-01-01 00:00 CET
-    full_hours = pd.date_range(start=day0, periods=24, freq="H", tz=tz)
-    pivot = pivot.reindex(full_hours)
-
-    # auf 15 Min-Raster hochrechnen
-    daily_15 = pivot.resample("15min").interpolate(method="linear")
-
-    # Frequenz-Info setzen (für df.index.freqstr)
-    daily_15.index.freq = pd.tseries.frequencies.to_offset("15T")
-
-    return daily_15
+    # damit pytest df.index.freqstr überprüfen kann:
+    day_df.index.freq = pd.tseries.frequencies.to_offset("15T")
+    return day_df
