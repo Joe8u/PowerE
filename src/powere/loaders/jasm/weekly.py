@@ -1,21 +1,29 @@
+#!/usr/bin/env python3
 # src/powere/loaders/jasm/weekly.py
 
 import pandas as pd
-from powere.loaders.jasm.monthly import load_jasm_month
+from pathlib import Path
+from powere.utils.settings import DATA_PROCESSED_STATIC
+from .monthly import load_jasm_month
 
-def load_jasm_week(year: int) -> pd.DataFrame:
+def load_jasm_week(year: int, start: str = None, end: str = None) -> pd.DataFrame:
     """
-    Gibt die ersten 7×96 = 672 (oder mehr) Zeilen
-    des Jahres-Rasters im 15-Minuten-Takt zurück.
+    Liest alle Monats-Profile eines Jahres und gibt die erste Kalenderwoche
+    (7×96 Zeitpunkte) als 15-Minuten-Raster zurück.
+    Optionales Slicing mit start/end.
     """
-    # komplettes Jahr laden
+    # 1) Gesamtjahr laden
     df = load_jasm_month(year)
-    df.index = pd.to_datetime(df.index)  # sicherstellen DatetimeIndex
 
-    # erster Kalendertag
-    start = df.index.normalize()[0]
-    end   = start + pd.Timedelta(days=7) - pd.Timedelta(minutes=15)
+    # 2) Index als DatetimeIndex + freq setzen
+    df.index = pd.to_datetime(df.index)
+    df.index.freq = pd.tseries.frequencies.to_offset("15T")
 
-    week_df = df.loc[start:end].copy()
-    week_df.index.freq = pd.tseries.frequencies.to_offset("15T")
+    # 3) Erste 7×96 Reihen herausschneiden
+    week_df = df.iloc[:7 * 96]
+
+    # 4) Optionaler Slicing
+    if start and end:
+        week_df = week_df.loc[start:end]
+
     return week_df
