@@ -1,7 +1,5 @@
-from pathlib import Path
-
 import pandas as pd
-from pandas.tseries.frequencies import to_offset
+from pathlib import Path
 
 from powere.loaders.jasm.monthly import load_jasm_month
 
@@ -10,25 +8,31 @@ def load_jasm_week(year: int, start: str = None, end: str = None) -> pd.DataFram
     """
     Schneidet aus den vor­berechneten Monats-Profilen
     die erste Kalenderwoche (7×96 Punkte) heraus.
-    Liefert mindestens 672 Zeilen, freqstr "15T".
+    Liefert genau 672 Zeilen, freqstr "15T".
     """
-    # 1) Ganzes Jahr als 15T-Raster laden
+    # 1) ganzes Jahr als 15T-Raster
     df = load_jasm_month(year)
 
-    # 2) Beginn der ersten Kalenderwoche (am 1. Januar)
-    first_ts = df.index[0].floor("D")
+    # 2) Index in echten DatetimeIndex (ohne Objekt-Dtype)
+    df.index = pd.DatetimeIndex(df.index)
 
-    # 3) Vollständigen 7-Tage-Index erzeugen
+    # 3) tz-lokalisieren, falls noch nicht geschehen
+    if df.index.tz is None:
+        df.index = df.index.tz_localize(
+            "Europe/Zurich", nonexistent="shift_forward", ambiguous="infer"
+        )
+
+    # 4) Grid der ersten Kalenderwoche erzeugen
+    first_ts = df.index[0].floor("D")
     full_idx = pd.date_range(
         start=first_ts,
         periods=7 * 96,
-        freq="15T"
+        freq="15T",
+        tz=df.index.tz
     )
 
-    # 4) DataFrame neu indizieren und interpolieren
+    # 5) neu indizieren & füllen
     week_df = df.reindex(full_idx).interpolate(method="linear")
 
-    # 5) Exakt 15-Tonnen-Offset an den Index hängen
-    week_df.index.freq = to_offset("15T")
-
+    # full_idx bringt freqstr "15T" mit
     return week_df
