@@ -5,7 +5,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.wsgi import WSGIMiddleware
 
 # 1) Deinen Dash-App importieren
-from src.dashboard.app import app as dash_app
+from src.powere.dashboard.app import app as dash_app
 
 # 2) FastAPI-Instanz anlegen
 app = FastAPI(
