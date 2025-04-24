@@ -30,6 +30,9 @@ src/powere/loaders/jasm/jasm_loader.py
 src/powere/loaders/jasm/monthly.py
 src/powere/loaders/jasm/weekly.py
 src/powere/loaders/jasm/yearly.py
+src/powere/loaders/loaders/__init__.py
+src/powere/loaders/loaders/jasm/__init__.py
+src/powere/loaders/loaders/jasm/yearly.py
 src/powere/loaders/market/__init__.py
 src/powere/loaders/survey/__init__.py
 src/powere/loaders/tertiary/__init__.py
@@ -46,4 +49,5 @@ src/powere/utils/__init__.py
 src/powere/utils/log.py
 src/powere/utils/settings.py
 src/powere/utils/time_helpers.py
+tests/test_dummy.py
 tests/test_loaders_jasm.py
