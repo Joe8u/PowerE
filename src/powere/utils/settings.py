@@ -9,8 +9,8 @@ load_dotenv(dotenv_path=os.path.join(os.getcwd(), ".env"))
 
 # 2) Basispfade
 DATA_RAW_DIR = os.getenv("DATA_RAW_DIR")
-DATA_PROC_STATIC = os.getenv("DATA_PROCESSED_STATIC")
-DATA_PROC_DYNAMIC = os.getenv("DATA_PROCESSED_DYNAMIC")
+DATA_PROCESSED_STATIC  = os.getenv("DATA_PROCESSED_STATIC")
+DATA_PROCESSED_DYNAMIC = os.getenv("DATA_PROCESSED_DYNAMIC")
 DASH_HOST = os.getenv("DASH_HOST", "127.0.0.1")
 DASH_PORT = int(os.getenv("DASH_PORT", 8050))
 TZ = os.getenv("TZ", "Europe/Zurich")
