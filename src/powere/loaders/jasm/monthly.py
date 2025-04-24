@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from powere.utils.settings import DATA_PROC_STATIC
+from powere.utils.settings import DATA_PROCESSED_STATIC
 
 
 def load_jasm_month(year: int, start: str = None, end: str = None) -> pd.DataFrame:
@@ -12,7 +12,7 @@ def load_jasm_month(year: int, start: str = None, end: str = None) -> pd.DataFra
     gibt sie als einen einzigen DataFrame zurück.
     Wenn start/end angegeben, wird darauf gesliced.
     """
-    base = Path(DATA_PROC_STATIC) / "jasm" / str(year) / "monthly"
+    base = Path(DATA_PROCESSED_STATIC) / "jasm" / str(year) / "monthly"
     dfs = []
     for m in range(1, 13):
         fn = base / f"appliance_monthly_{year}_{m:02d}.csv"
