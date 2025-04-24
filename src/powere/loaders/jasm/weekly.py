@@ -1,20 +1,38 @@
 # src/powere/loaders/jasm/weekly.py
 import pandas as pd
+
 from powere.loaders.jasm.monthly import load_jasm_month
 from powere.utils.settings import TZ
 
-def load_jasm_week(year: int, start: str = None, end: str = None) -> pd.DataFrame:
+
+def load_jasm_week(
+    year: int,
+    start: str = None,
+    end: str = None
+) -> pd.DataFrame:
     """
-    Schneidet aus dem statischen Monats-Profil die ersten 7 Tage
-    heraus und liefert genau 7×96 Zeilen im Raster freq "15T".
+    Schneidet die ersten 7 Tage (7×96 = 672 Intervalle) aus dem statischen
+    Jahresprofil und gibt DataFrame mit index.freqstr == "15T" zurück.
     """
-    # 1) komplettes Jahres-Monatsprofil laden
+    # 1) Ganzes Jahr laden
     df = load_jasm_month(year)
 
-    # 2) ersten Tag (00:00) ermitteln
-    first = pd.Timestamp(df.index[0].date(), tz=TZ)
-    last  = first + pd.Timedelta(days=7) - pd.Timedelta(minutes=15)
+    # 2) Start der ersten Kalenderwoche
+    first_day = df.index[0].floor("D")
+    week_df = df.loc[first_day : first_day + pd.Timedelta(days=7)]
 
-    # 3) slice und alsfreq
-    week_df = df.loc[first:last]
-    return week_df.asfreq("15T")
+    # 3) Vollständiges 7×96-Raster erzwingen
+    full_idx = pd.date_range(
+        start=first_day,
+        periods=7 * 96,
+        freq="15T",
+        tz=TZ
+    )
+
+    # 4) Reindex + Lücken füllen
+    week_df = week_df.reindex(full_idx).interpolate(method="linear")
+
+    # 5) 15-Min-Frequent setzen
+    week_df = week_df.asfreq("15T")
+
+    return week_df
