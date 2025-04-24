@@ -1,42 +1,54 @@
-#!/usr/bin/env python3
-# src/powere/loaders/jasm/daily.py
-
 import pandas as pd
 from pathlib import Path
 from powere.utils.settings import DATA_RAW_DIR
 
 def load_jasm_day(year: int, month: int, day_type: str = "weekday") -> pd.DataFrame:
     """
-    Lädt ein 15-Minuten-Raster für einen einzigen Kalendertag:
-      – year, month, day_type in {"weekday","weekend"}.
-      – Index: 96 Zeitpunkte über 24h, freq="15T".
-      – Spalten: Appliances.
-      – Werte: Leistung in kW (MW×1000), linear interpoliert.
+    Lädt das stündliche Appliance-Profil für den 1. Tag eines gegebenen Monats und 
+    interpoliert aufs 15-Minuten-Raster. Liefert genau 96 Zeilen, freqstr "15T".
     """
-    # 1) Roh‐CSV einlesen und filtern
-    csv_path = Path(DATA_RAW_DIR) / "jasm" / "Swiss_load_curves_2015_2035_2050.csv"
-    df = pd.read_csv(
-        csv_path, sep=";",
-        usecols=["Year","Month","Day type","Time","Appliances","Power (MW)"]
-    )
+    # 1) Rohdaten einlesen
+    raw_csv = Path(DATA_RAW_DIR) / "jasm" / "Swiss_load_curves_2015_2035_2050.csv"
+    df = pd.read_csv(raw_csv, sep=";", usecols=[
+        "Year", "Month", "Day type", "Time", "Appliances", "Power (MW)"
+    ])
     df = df[
         (df["Year"] == year) &
         (df["Month"] == month) &
         (df["Day type"] == day_type)
     ].copy()
 
-    # 2) Pivot + MW→kW
-    base = pd.Timestamp(2000, 1, 1)  # Platzhalterdatum
-    pivot = (
-        df.assign(timestamp=base + pd.to_timedelta(df["Time"]))
-          .pivot(index="timestamp", columns="Appliances", values="Power (MW)")
-          .mul(1_000)
+    # 2) Timestamp für einen Platzhalter-Tag erzeugen
+    #    wir nehmen den 1. des Monats als Datum, Zeit aus "Time"-Spalte
+    df["timestamp"] = pd.to_datetime(df["Time"], format="%H:%M:%S")
+    base_date = pd.Timestamp(year=year, month=month, day=1)
+    df["timestamp"] = df["timestamp"].dt.time.apply(
+        lambda t: pd.Timestamp.combine(base_date, t)
+    )
+    # 3) tz-lokalisieren (mit DST-Handling)
+    df["timestamp"] = df["timestamp"].dt.tz_localize(
+        "Europe/Zurich", nonexistent="shift_forward", ambiguous="infer"
     )
 
-    # 3) Vollständiges 15-Min-Raster aufbauen
-    full_idx = pd.date_range(start=base, periods=96, freq="15T")
-    day_df = pivot.reindex(full_idx).interpolate(method="linear")
+    # 4) Pivot und Umrechnung MW→kW
+    pivot = df.pivot(index="timestamp", columns="Appliances", values="Power (MW)")
+    pivot = pivot.mul(1_000)
 
-    # 4) freq‐Attribut setzen
+    # 5) Auf 15-Minuten-Raster hochrechnen
+    day_df = pivot.resample("15T").interpolate(method="linear")
+
+    # 6) Sicherstellen: genau 96 Zeilen, Lücken interpolieren
+    start = day_df.index[0].floor("D")
+    full_idx = pd.date_range(
+        start=start,
+        periods=96,
+        freq="15T",
+        tz=day_df.index.tz
+    )
+    day_df = day_df.reindex(full_idx).interpolate(method="linear")
+
+    # 7) freq und freqstr setzen
     day_df.index.freq = pd.tseries.frequencies.to_offset("15T")
+    day_df.index.freqstr = "15T"
+
     return day_df
