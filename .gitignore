@@ -9,3 +9,4 @@ __pycache__/
 *.log
 # VSCode
 .vscode/
+PowerE.egg-info/
