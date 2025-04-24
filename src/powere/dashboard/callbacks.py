@@ -6,10 +6,10 @@ import pandas as pd
 from dash import Input, Output
 
 # Loader-Funktionen importieren (Signaturen siehe unten!)
-from powere.loaders.jasm.daily import load_jasm_day
-from powere.loaders.jasm.monthly import load_jasm_month
-from powere.loaders.jasm.weekly import load_jasm_week
-from powere.loaders.jasm.yearly import load_jasm_year
+from powere.powere.loaders.jasm.daily import load_jasm_day
+from powere.powere.loaders.jasm.monthly import load_jasm_month
+from powere.powere.loaders.jasm.weekly import load_jasm_week
+from powere.powere.loaders.jasm.yearly import load_jasm_year
 
 # (Analog später für market, tertiary, survey …)
 

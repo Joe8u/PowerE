@@ -1,4 +1,4 @@
-# /Users/jonathan/Documents/GitHub/PowerE/src/powere/api/server.py
+# src/api/server.py
 
 from fastapi import FastAPI
 from fastapi.middleware.wsgi import WSGIMiddleware
