@@ -1,6 +1,6 @@
 #/Users/jonathan/Documents/GitHub/PowerE/src/powere/loaders/jasm/daily.py
-from typing import Optional
 
+from typing import Optional
 import pandas as pd
 from pathlib import Path
 
@@ -36,12 +36,16 @@ def load_jasm_day(
     else:
         df.index = df.index.tz_convert(TZ)
 
-    # 3) Tagesfenster herausschneiden (96 Intervalle)
+    # 3) Tagesfenster definieren
     start = pd.Timestamp(year=year, month=month, day=day, tz=TZ)
-    end   = start + pd.Timedelta(hours=24) - pd.Timedelta(minutes=15)
-    day_df = df.loc[start:end]
+    end = start + pd.Timedelta(hours=24) - pd.Timedelta(minutes=15)
 
-    # 4) 15-Min-Raster forcieren
-    day_df = day_df.asfreq("15T")
+    # 4) Vollständiges 15-Min-Raster erzeugen
+    full_idx = pd.date_range(start=start, end=end, freq="15T", tz=TZ)
+
+    # 5) Daten neu indexieren und fehlende Werte interpolieren
+    day_df = df.reindex(full_idx)
+    day_df = day_df.interpolate(method="time")
+    day_df.index.freq = "15T"
 
     return day_df
