@@ -1,30 +1,34 @@
-# src/powere/loaders/jasm/weekly.py
+from pathlib import Path
 
 import pandas as pd
+from pandas.tseries.frequencies import to_offset
+
 from powere.loaders.jasm.monthly import load_jasm_month
+
 
 def load_jasm_week(year: int, start: str = None, end: str = None) -> pd.DataFrame:
     """
-    Schneidet aus dem vor-kalkulierten Jahresprofil die ersten 7 Tage
-    heraus und liefert genau 7×96 = 672 Zeilen, freqstr "15T".
+    Schneidet aus den vor­berechneten Monats-Profilen
+    die erste Kalenderwoche (7×96 Punkte) heraus.
+    Liefert mindestens 672 Zeilen, freqstr "15T".
     """
-    # 1) Ganzes Jahr in 15-Minuten-Raster laden
+    # 1) Ganzes Jahr als 15T-Raster laden
     df = load_jasm_month(year)
 
-    # 2) Index in echten DatetimeIndex umwandeln (parse_dates sollte das schon tun)
-    df.index = pd.DatetimeIndex(df.index)
+    # 2) Beginn der ersten Kalenderwoche (am 1. Januar)
+    first_ts = df.index[0].floor("D")
 
-    # 3) Ersten Tag bestimmen (Mitternacht)
-    first_day = df.index.normalize()[0]
-
-    # 4) Voller 7-Tage-Index
+    # 3) Vollständigen 7-Tage-Index erzeugen
     full_idx = pd.date_range(
-        start=first_day,
+        start=first_ts,
         periods=7 * 96,
         freq="15T"
     )
 
-    # 5) Reindex + interpolate
+    # 4) DataFrame neu indizieren und interpolieren
     week_df = df.reindex(full_idx).interpolate(method="linear")
+
+    # 5) Exakt 15-Tonnen-Offset an den Index hängen
+    week_df.index.freq = to_offset("15T")
 
     return week_df
