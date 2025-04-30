@@ -1,40 +1,38 @@
 # src/dashboard/app.py
-from dash import Dash, html, dcc, Input, Output
+
+import dash
 import dash_bootstrap_components as dbc
+from dash import html, dcc
+from dash.dependencies import Input, Output
 
-from dashboard.pages.summary   import layout as summary_layout
-from dashboard.pages.details   import layout as details_layout
-from dashboard.pages.scenarios import layout as scenarios_layout
+# Layouts importieren (keine callbacks!)
+from dashboard.pages.summary   import layout as summary_layout,   register_callbacks as register_summary
+from dashboard.pages.details   import layout as details_layout,   register_callbacks as register_details
+from dashboard.pages.scenarios import layout as scenarios_layout, register_callbacks as register_scenarios
 
-app = Dash(
+app = dash.Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
-    title="PowerE-Dash Prototype"
+    suppress_callback_exceptions=True
 )
+server = app.server
 
+# App-Layout mit URL-Routing
 app.layout = html.Div([
-    # URL-Leiste überwachen
-    dcc.Location(id='url', refresh=False),
-    # Navigation
-    html.Nav([
-        dcc.Link("1 – Summary",   href='/',         style={'margin':'10px'}),
-        dcc.Link("2 – Details",   href='/details',  style={'margin':'10px'}),
-        dcc.Link("3 – Scenarios", href='/scenarios',style={'margin':'10px'}),
-    ], style={'padding':'20px','backgroundColor':'#f8f9fa'}),
-    # Hier rendern wir die Seite
-    html.Div(id='page-content', style={'padding':'20px'})
+    dcc.Location(id="url", refresh=False),
+    html.Div(id="page-content")
 ])
 
-@app.callback(
-    Output('page-content', 'children'),
-    Input('url', 'pathname')
-)
+@app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def display_page(pathname):
-    if pathname == '/':
-        return summary_layout
-    elif pathname == '/details':
+    if pathname == "/details":
         return details_layout
-    elif pathname == '/scenarios':
+    elif pathname == "/scenarios":
         return scenarios_layout
     else:
-        return html.H1("404: Seite nicht gefunden")
+        return summary_layout
+
+# Hier die Callback-Registrierungs-Funktionen aufrufen
+register_summary(app)
+register_details(app)
+register_scenarios(app)
