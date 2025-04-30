@@ -7,4 +7,4 @@ from dashboard.app import app
 
 if __name__ == '__main__':
     # im Debug-Modus, öffnet localhost:8050
-    app.run_server(debug=True)
+    app.run(debug=True)
