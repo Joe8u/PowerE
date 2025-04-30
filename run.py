@@ -1,10 +1,11 @@
 # run.py
 import sys
-# Damit Python unsere src/-Module findet:
-sys.path.append('src')
+import os
+
+# Füge das src-Verzeichnis zum Python-Pfad hinzu
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
 
 from dashboard.app import app
 
-if __name__ == '__main__':
-    # im Debug-Modus, öffnet localhost:8050
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run_server(debug=True)
