@@ -1,1 +1,264 @@
 1746107407479	geckodriver	INFO	Listening on 127.0.0.1:63906
+1746107655318	geckodriver	INFO	Listening on 127.0.0.1:64134
+1746107655877	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/opt/homebrew/bin/fire ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/94/qb4h3ndj5kbdnm3m3qh9cpv80000gn/T/rust_mozprofile0TL2Tp"
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/CodeResources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/_CodeSignature/CodeResources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/_CodeSignature'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/firefox'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/pingsender'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/libfreebl3.dylib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/liblgpllibs.dylib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/plugin-container.app/Contents/_CodeSignature/CodeResources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/plugin-container.app/Contents/_CodeSignature'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/plugin-container.app/Contents/MacOS/plugin-container'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/plugin-container.app/Contents/MacOS'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/plugin-container.app/Contents/Resources/English.lproj/InfoPlist.strings'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/plugin-container.app/Contents/Resources/English.lproj'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/plugin-container.app/Contents/Resources/plugin-container.sig'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/plugin-container.app/Contents/Resources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/plugin-container.app/Contents/Info.plist'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/plugin-container.app/Contents/PkgInfo'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/plugin-container.app/Contents'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/plugin-container.app'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/nmhproxy'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/libsoftokn3.dylib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/XUL'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/libmozavutil.dylib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/libmozglue.dylib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/libgkcodecs.dylib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/crashreporter.app/Contents/_CodeSignature/CodeResources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/crashreporter.app/Contents/_CodeSignature'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/crashreporter.app/Contents/MacOS/crashreporter'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/crashreporter.app/Contents/MacOS'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/crashreporter.app/Contents/Resources/English.lproj/InfoPlist.strings'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/crashreporter.app/Contents/Resources/English.lproj'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/crashreporter.app/Contents/Resources/crashreporter.icns'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/crashreporter.app/Contents/Resources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/crashreporter.app/Contents/Info.plist'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/crashreporter.app/Contents/PkgInfo'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/crashreporter.app/Contents'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/crashreporter.app'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/libmozavcodec.dylib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/_CodeSignature/CodeResources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/_CodeSignature'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/MacOS/org.mozilla.updater'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/MacOS'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Resources/English.lproj/MainMenu.nib/classes.nib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Resources/English.lproj/MainMenu.nib/info.nib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Resources/English.lproj/MainMenu.nib/keyedobjects.nib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Resources/English.lproj/MainMenu.nib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Resources/English.lproj/InfoPlist.strings'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Resources/English.lproj'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Resources/updater.icns'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Resources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Frameworks/UpdateSettings.framework/_CodeSignature/CodeResources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Frameworks/UpdateSettings.framework/_CodeSignature'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Frameworks/UpdateSettings.framework/UpdateSettings'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Frameworks/UpdateSettings.framework/Resources/Info.plist'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Frameworks/UpdateSettings.framework/Resources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Frameworks/UpdateSettings.framework'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Frameworks'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/Info.plist'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents/PkgInfo'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app/Contents'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/updater.app'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/media-plugin-helper.app/Contents/_CodeSignature/CodeResources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/media-plugin-helper.app/Contents/_CodeSignature'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/media-plugin-helper.app/Contents/MacOS/Firefox Media Plugin Helper'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/media-plugin-helper.app/Contents/MacOS'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/media-plugin-helper.app/Contents/Resources/English.lproj/InfoPlist.strings'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/media-plugin-helper.app/Contents/Resources/English.lproj'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/media-plugin-helper.app/Contents/Resources/Firefox Media Plugin Helper.sig'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/media-plugin-helper.app/Contents/Resources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/media-plugin-helper.app/Contents/Info.plist'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/media-plugin-helper.app/Contents/PkgInfo'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/media-plugin-helper.app/Contents'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/media-plugin-helper.app'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS/libnss3.dylib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/MacOS'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/de.lproj/InfoPlist.strings'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/de.lproj'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/removed-files'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/locale.ini'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/MainMenu.nib/classes.nib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/MainMenu.nib/info.nib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/MainMenu.nib/keyedobjects.nib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/MainMenu.nib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/rowResize.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeNWSE@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeNS.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeNESW@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeNE.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/vtIBeam.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeNW.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeNESW.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/arrowS@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/colResize.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/move.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/move@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/arrowS.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/cell.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeSE@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeNWSE.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/zoomIn@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeNS@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/help.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/zoomOut.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/rowResize@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeSE.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/help@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeNE@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeSW.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/arrowN.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/zoomOut@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/arrowN@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/colResize@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeSW@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/vtIBeam@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/zoomIn.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/cell@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors/sizeNW@2x.png'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res/cursors'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/res'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/firefox.icns'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/updater.ini'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/document.icns'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/omni.ja'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/XUL.sig'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/platform.ini'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/precomplete'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/browser/omni.ja'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/browser'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/firefox.sig'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/gmp-clearkey/0.1/libclearkey.dylib.sig'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/gmp-clearkey/0.1/manifest.json'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/gmp-clearkey/0.1/libclearkey.dylib'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/gmp-clearkey/0.1'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/gmp-clearkey'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/dependentlibs.list'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources/application.ini'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Resources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Library/LaunchServices/org.mozilla.updater'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Library/LaunchServices'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Library'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/embedded.provisionprofile'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Frameworks/ChannelPrefs.framework/_CodeSignature/CodeResources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Frameworks/ChannelPrefs.framework/_CodeSignature'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Frameworks/ChannelPrefs.framework/Resources/Info.plist'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Frameworks/ChannelPrefs.framework/Resources'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Frameworks/ChannelPrefs.framework/ChannelPrefs'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Frameworks/ChannelPrefs.framework'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Frameworks'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/Info.plist'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents/PkgInfo'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app/Contents'
+xattr: [Errno 1] Operation not permitted: '/Applications/Firefox.app'
+1746107662954	geckodriver	INFO	Listening on 127.0.0.1:64146
+1746107663491	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/opt/homebrew/bin/fire ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/94/qb4h3ndj5kbdnm3m3qh9cpv80000gn/T/rust_mozprofileuobOQt"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1746107664207	Marionette	INFO	Marionette enabled
+1746107664390	Marionette	INFO	Listening on port 64156
+WebDriver BiDi listening on ws://127.0.0.1:64147
+Read port: 64156
+1746107664496	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 1 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+1746107666027	Marionette	INFO	Stopped listening on port 64156
+console.error: services.settings: 
+  main/cfr: Signature of bundled changeset is invalid: [Exception... "<no message>"  nsresult: "0x8046001e (<unknown>)"  location: "JS frame :: resource://gre/modules/ServiceRequest.sys.mjs :: open :: line 126"  data: no].
+console.error: services.settings: 
+  main/tracking-protection-lists: Signature of bundled changeset is invalid: [Exception... "<no message>"  nsresult: "0x8046001e (<unknown>)"  location: "JS frame :: resource://gre/modules/ServiceRequest.sys.mjs :: open :: line 126"  data: no].
+console.error: services.settings: 
+  main/nimbus-secure-experiments: Signature of bundled changeset is invalid: [Exception... "<no message>"  nsresult: "0x8046001e (<unknown>)"  location: "JS frame :: resource://gre/modules/ServiceRequest.sys.mjs :: open :: line 126"  data: no].
+console.error: services.settings: 
+  main/newtab-wallpapers-v2: Signature of bundled changeset is invalid: [Exception... "<no message>"  nsresult: "0x8046001e (<unknown>)"  location: "JS frame :: resource://gre/modules/ServiceRequest.sys.mjs :: open :: line 126"  data: no].
+console.error: services.settings: 
+  main/partitioning-exempt-urls: Signature of bundled changeset is invalid: [Exception... "<no message>"  nsresult: "0x8046001e (<unknown>)"  location: "JS frame :: resource://gre/modules/ServiceRequest.sys.mjs :: open :: line 126"  data: no].
+console.error: services.settings: 
+  main/normandy-recipes-capabilities: Signature of bundled changeset is invalid: [Exception... "<no message>"  nsresult: "0x8046001e (<unknown>)"  location: "JS frame :: resource://gre/modules/ServiceRequest.sys.mjs :: open :: line 126"  data: no].
+console.error: services.settings: 
+  main/search-categorization: Signature of bundled changeset is invalid: [Exception... "<no message>"  nsresult: "0x8046001e (<unknown>)"  location: "JS frame :: resource://gre/modules/ServiceRequest.sys.mjs :: open :: line 126"  data: no].
+console.error: services.settings: 
+  main/message-groups: Signature of bundled changeset is invalid: [Exception... "<no message>"  nsresult: "0x8046001e (<unknown>)"  location: "JS frame :: resource://gre/modules/ServiceRequest.sys.mjs :: open :: line 126"  data: no].
+console.error: services.settings: 
+  main/fingerprinting-protection-overrides: Signature of bundled changeset is invalid: [Exception... "<no message>"  nsresult: "0x8046001e (<unknown>)"  location: "JS frame :: resource://gre/modules/ServiceRequest.sys.mjs :: open :: line 126"  data: no].
+console.error: services.settings: 
+  main/query-stripping: Signature of bundled changeset is invalid: [Exception... "<no message>"  nsresult: "0x8046001e (<unknown>)"  location: "JS frame :: resource://gre/modules/ServiceRequest.sys.mjs :: open :: line 126"  data: no].
+console.error: services.settings: 
+Object
+  - prototype Object
+    - columnNumber = 0
+    - data = null
+    - filename = resource://gre/modules/ServiceRequest.sys.mjs
+    - lineNumber = 126
+    - location = {"name":"open","filename":"resource://gre/modules/ServiceRequest.sys.mjs","sourceId":24,"lineNumber":126,"columnNumber":11,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetch/<","sourceId":23,"lineNumber":268,"columnNumber":15,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetch","sourceId":23,"lineNumber":219,"columnNumber":12,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetchLatestChanges","sourceId":23,"lineNumber":429,"columnNumber":34,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/RemoteSettingsClient.sys.mjs","name":"sync","sourceId":21,"lineNumber":625,"columnNumber":42,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/RemoteSettingsClient.sys.mjs","name":"get/this._importingPromise<","sourceId":21,"lineNumber":477,"columnNumber":28,"asyncCause":null,"asyncCaller":null,"caller":null,"formattedStack":"get/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"sync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetch/<@resource://services-settings/Utils.sys.mjs:268:15\nfetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"open@resource://gre/modules/ServiceRequest.sys.mjs:126:11\nfetch/<@resource://services-settings/Utils.sys.mjs:268:15\nfetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}}
+    - message = 
+    - name = 
+    - result = 2152071198
+    - stack = open@resource://gre/modules/ServiceRequest.sys.mjs:126:11|fetch/<@resource://services-settings/Utils.sys.mjs:268:15|fetch@resource://services-settings/Utils.sys.mjs:219:12|fetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34|sync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42|get/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28|
+  - prototype Object
+console.error: services.settings: 
+Object
+  - prototype Object
+    - columnNumber = 0
+    - data = null
+    - filename = resource://gre/modules/ServiceRequest.sys.mjs
+    - lineNumber = 126
+    - location = {"name":"open","filename":"resource://gre/modules/ServiceRequest.sys.mjs","sourceId":24,"lineNumber":126,"columnNumber":11,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetch/<","sourceId":23,"lineNumber":268,"columnNumber":15,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetch","sourceId":23,"lineNumber":219,"columnNumber":12,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetchLatestChanges","sourceId":23,"lineNumber":429,"columnNumber":34,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/RemoteSettingsClient.sys.mjs","name":"sync","sourceId":21,"lineNumber":625,"columnNumber":42,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/RemoteSettingsClient.sys.mjs","name":"get/this._importingPromise<","sourceId":21,"lineNumber":477,"columnNumber":28,"asyncCause":null,"asyncCaller":null,"caller":null,"formattedStack":"get/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"sync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetch/<@resource://services-settings/Utils.sys.mjs:268:15\nfetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"open@resource://gre/modules/ServiceRequest.sys.mjs:126:11\nfetch/<@resource://services-settings/Utils.sys.mjs:268:15\nfetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}}
+    - message = 
+    - name = 
+    - result = 2152071198
+    - stack = open@resource://gre/modules/ServiceRequest.sys.mjs:126:11|fetch/<@resource://services-settings/Utils.sys.mjs:268:15|fetch@resource://services-settings/Utils.sys.mjs:219:12|fetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34|sync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42|get/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28|
+  - prototype Object
+console.error: services.settings: 
+Object
+  - prototype Object
+    - columnNumber = 0
+    - data = null
+    - filename = resource://gre/modules/ServiceRequest.sys.mjs
+    - lineNumber = 126
+    - location = {"name":"open","filename":"resource://gre/modules/ServiceRequest.sys.mjs","sourceId":24,"lineNumber":126,"columnNumber":11,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetch/<","sourceId":23,"lineNumber":268,"columnNumber":15,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetch","sourceId":23,"lineNumber":219,"columnNumber":12,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetchLatestChanges","sourceId":23,"lineNumber":429,"columnNumber":34,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/RemoteSettingsClient.sys.mjs","name":"sync","sourceId":21,"lineNumber":625,"columnNumber":42,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/RemoteSettingsClient.sys.mjs","name":"get/this._importingPromise<","sourceId":21,"lineNumber":477,"columnNumber":28,"asyncCause":null,"asyncCaller":null,"caller":null,"formattedStack":"get/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"sync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetch/<@resource://services-settings/Utils.sys.mjs:268:15\nfetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"open@resource://gre/modules/ServiceRequest.sys.mjs:126:11\nfetch/<@resource://services-settings/Utils.sys.mjs:268:15\nfetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}}
+    - message = 
+    - name = 
+    - result = 2152071198
+    - stack = open@resource://gre/modules/ServiceRequest.sys.mjs:126:11|fetch/<@resource://services-settings/Utils.sys.mjs:268:15|fetch@resource://services-settings/Utils.sys.mjs:219:12|fetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34|sync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42|get/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28|
+  - prototype Object
+console.error: services.settings: 
+Object
+  - prototype Object
+    - columnNumber = 0
+    - data = null
+    - filename = resource://gre/modules/ServiceRequest.sys.mjs
+    - lineNumber = 126
+    - location = {"name":"open","filename":"resource://gre/modules/ServiceRequest.sys.mjs","sourceId":24,"lineNumber":126,"columnNumber":11,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetch/<","sourceId":23,"lineNumber":268,"columnNumber":15,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetch","sourceId":23,"lineNumber":219,"columnNumber":12,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetchLatestChanges","sourceId":23,"lineNumber":429,"columnNumber":34,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/RemoteSettingsClient.sys.mjs","name":"sync","sourceId":21,"lineNumber":625,"columnNumber":42,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/RemoteSettingsClient.sys.mjs","name":"get/this._importingPromise<","sourceId":21,"lineNumber":477,"columnNumber":28,"asyncCause":null,"asyncCaller":null,"caller":null,"formattedStack":"get/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"sync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetch/<@resource://services-settings/Utils.sys.mjs:268:15\nfetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"open@resource://gre/modules/ServiceRequest.sys.mjs:126:11\nfetch/<@resource://services-settings/Utils.sys.mjs:268:15\nfetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}}
+    - message = 
+    - name = 
+    - result = 2152071198
+    - stack = open@resource://gre/modules/ServiceRequest.sys.mjs:126:11|fetch/<@resource://services-settings/Utils.sys.mjs:268:15|fetch@resource://services-settings/Utils.sys.mjs:219:12|fetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34|sync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42|get/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28|
+  - prototype Object
+console.error: services.settings: 
+Object
+  - prototype Object
+    - columnNumber = 0
+    - data = null
+    - filename = resource://gre/modules/ServiceRequest.sys.mjs
+    - lineNumber = 126
+    - location = {"name":"open","filename":"resource://gre/modules/ServiceRequest.sys.mjs","sourceId":24,"lineNumber":126,"columnNumber":11,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetch/<","sourceId":23,"lineNumber":268,"columnNumber":15,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetch","sourceId":23,"lineNumber":219,"columnNumber":12,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetchLatestChanges","sourceId":23,"lineNumber":429,"columnNumber":34,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/RemoteSettingsClient.sys.mjs","name":"sync","sourceId":21,"lineNumber":625,"columnNumber":42,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/RemoteSettingsClient.sys.mjs","name":"get/this._importingPromise<","sourceId":21,"lineNumber":477,"columnNumber":28,"asyncCause":null,"asyncCaller":null,"caller":null,"formattedStack":"get/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"sync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetch/<@resource://services-settings/Utils.sys.mjs:268:15\nfetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"open@resource://gre/modules/ServiceRequest.sys.mjs:126:11\nfetch/<@resource://services-settings/Utils.sys.mjs:268:15\nfetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}}
+    - message = 
+    - name = 
+    - result = 2152071198
+    - stack = open@resource://gre/modules/ServiceRequest.sys.mjs:126:11|fetch/<@resource://services-settings/Utils.sys.mjs:268:15|fetch@resource://services-settings/Utils.sys.mjs:219:12|fetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34|sync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42|get/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28|
+  - prototype Object
+console.error: services.settings: 
+Object
+  - prototype Object
+    - columnNumber = 0
+    - data = null
+    - filename = resource://gre/modules/ServiceRequest.sys.mjs
+    - lineNumber = 126
+    - location = {"name":"open","filename":"resource://gre/modules/ServiceRequest.sys.mjs","sourceId":24,"lineNumber":126,"columnNumber":11,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetch/<","sourceId":23,"lineNumber":268,"columnNumber":15,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetch","sourceId":23,"lineNumber":219,"columnNumber":12,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/Utils.sys.mjs","name":"fetchLatestChanges","sourceId":23,"lineNumber":429,"columnNumber":34,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/RemoteSettingsClient.sys.mjs","name":"sync","sourceId":21,"lineNumber":625,"columnNumber":42,"asyncCause":null,"asyncCaller":null,"caller":{"filename":"resource://services-settings/RemoteSettingsClient.sys.mjs","name":"get/this._importingPromise<","sourceId":21,"lineNumber":477,"columnNumber":28,"asyncCause":null,"asyncCaller":null,"caller":null,"formattedStack":"get/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"sync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"fetch/<@resource://services-settings/Utils.sys.mjs:268:15\nfetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}},"formattedStack":"open@resource://gre/modules/ServiceRequest.sys.mjs:126:11\nfetch/<@resource://services-settings/Utils.sys.mjs:268:15\nfetch@resource://services-settings/Utils.sys.mjs:219:12\nfetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34\nsync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42\nget/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28\n","nativeSavedFrame":{}}
+    - message = 
+    - name = 
+    - result = 2152071198
+    - stack = open@resource://gre/modules/ServiceRequest.sys.mjs:126:11|fetch/<@resource://services-settings/Utils.sys.mjs:268:15|fetch@resource://services-settings/Utils.sys.mjs:219:12|fetchLatestChanges@resource://services-settings/Utils.sys.mjs:429:34|sync@resource://services-settings/RemoteSettingsClient.sys.mjs:625:42|get/this._importingPromise<@resource://services-settings/RemoteSettingsClient.sys.mjs:477:28|
+  - prototype Object
