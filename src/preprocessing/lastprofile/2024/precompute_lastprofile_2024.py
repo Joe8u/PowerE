@@ -35,7 +35,7 @@ def pivot_year(df, year):
       ["power_(mw)"]
       .mean()
     )
-    # in MW → kW
+
     df_y["power_kw"] = df_y["power_(mw)"]
     # pivot
     return (
