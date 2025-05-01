@@ -18,8 +18,9 @@ app.layout = dbc.Container([
         color="primary",
         dark=True,
         children=[
-            dbc.NavItem(dbc.NavLink("Details", href="/details")),
-            # … weitere Seiten
+            dbc.NavItem(dbc.NavLink("Summary",    href="/")),
+            dbc.NavItem(dbc.NavLink("Details",    href="/details")),
+            dbc.NavItem(dbc.NavLink("Scenarios",  href="/scenarios")),
         ]
     ),
     dash.page_container       # hier werden deine pages gerendert

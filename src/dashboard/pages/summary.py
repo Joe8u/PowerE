@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # src/dashboard/pages/summary.py
 
 import pandas as pd
@@ -14,44 +13,34 @@ DF_DUMMY = pd.DataFrame({
     "Wert": [1000, 300]
 })
 
-# Modul-level Layout
+# Modul-level Layout mit Interval als Trigger
 layout = html.Div([
+    dcc.Interval(id="summary-trigger", interval=1, max_intervals=1),
     html.H2("Executive Summary"),
-    # Intervall, um die beiden Callbacks einmal zu triggern
-    dcc.Interval(id="summary-interval", interval=1, n_intervals=0, max_intervals=1),
-
     html.Div([
         html.H4("Netto-Mehrwert (CHF)"),
         html.Div(id="summary-net-value")
     ], className="card", style={"marginBottom": "20px"}),
-
     dcc.Graph(id="summary-kpi-graph")
 ])
 
-# Callback 1: Netto-Wert ausrechnen
+# Callback 1 – wird einmal durch Interval ausgelöst
 @callback(
     Output("summary-net-value", "children"),
-    Input("summary-interval", "n_intervals")
+    Input("summary-trigger", "n_intervals")
 )
 def update_net_value(_):
     total = (
-        DF_DUMMY.loc[DF_DUMMY["Kategorie"] == "Spot Einsparung", "Wert"].sum()
-        - DF_DUMMY.loc[DF_DUMMY["Kategorie"] == "Kompensation", "Wert"].sum()
+        DF_DUMMY.loc[DF_DUMMY["Kategorie"]=="Spot Einsparung", "Wert"].sum()
+        - DF_DUMMY.loc[DF_DUMMY["Kategorie"]=="Kompensation",   "Wert"].sum()
     )
     return f"{total} CHF"
 
-# Callback 2: Balkendiagramm zeichnen
+# Callback 2 – baut das Balkendiagramm
 @callback(
     Output("summary-kpi-graph", "figure"),
-    Input("summary-interval", "n_intervals")
+    Input("summary-trigger", "n_intervals")
 )
 def update_kpi_graph(_):
-    fig = px.bar(
-        DF_DUMMY,
-        x="Kategorie",
-        y="Wert",
-        title="Kosten vs. Kompensation",
-        labels={"Wert": "CHF", "Kategorie": ""}
-    )
-    fig.update_layout(margin={"t":40, "b":20, "l":20, "r":20})
+    fig = px.bar(DF_DUMMY, x="Kategorie", y="Wert", title="Kosten vs. Kompensation")
     return fig
