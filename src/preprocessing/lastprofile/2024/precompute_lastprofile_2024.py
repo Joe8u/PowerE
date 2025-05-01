@@ -1,95 +1,83 @@
 #!/usr/bin/env python3
-# PowerE/src/preprocessing/lastprofile/2024/precompute_lastprofile_2024.py
-
-#!/usr/bin/env python3
-#!/usr/bin/env python3
 # src/preprocessing/lastprofile/2024/precompute_lastprofile_2024.py
 
 import pandas as pd
 from pathlib import Path
 
+# --- 0) Config ---------------------------------------------------------------
+RAW_CSV = Path("data/raw/lastprofile/Swiss_load_curves_2015_2035_2050.csv")
 BASE    = Path("data/processed/lastprofile")
 OUT_DIR = BASE / "2024"
 OUT_DIR.mkdir(exist_ok=True)
 
-# linearer Gewichtungsfaktor zwischen 2015 ↔ 2035
+# Linearer Mischfaktor zwischen 2015 und 2035 für das Jahr 2024
 f = (2024 - 2015) / (2035 - 2015)  # = 0.45
 
-for m in range(1, 13):
-    # 1) Lade Wide-CSV für 2015 & 2035
-    path15 = BASE / "2015" / f"2015-{m:02d}.csv"
-    path35 = BASE / "2035" / f"2035-{m:02d}.csv"
-    df15 = pd.read_csv(path15, parse_dates=["timestamp"])
-    df35 = pd.read_csv(path35, parse_dates=["timestamp"])
+# 1) Raw einlesen ------------------------------------------------------------
+# CSV nutzt Semikolon, Spalten: Year;Month;Day type;Time;Appliances;Power (MW)
+df_raw = pd.read_csv(
+    RAW_CSV,
+    sep=";",
+    dtype={"Year":int, "Month":int, "Day type":str, "Time":str, "Appliances":str},
+    parse_dates=False
+)
 
-    # 2) normalize column names (strip whitespace, to lowercase)
-    for df in (df15, df35):
-        df.columns = df.columns.str.strip().str.lower()
+# Einheitlich lowercase & strip
+df_raw.columns = df_raw.columns.str.strip().str.lower().str.replace(" ", "_")
 
-    # 3) force timestamp → datetime
-    for df in (df15, df35):
-        df["timestamp"] = pd.to_datetime(df["timestamp"], infer_datetime_format=True)
-
-    # 4) Melt → long-Format für saisonale Gruppierung
-    df15_long = df15.melt(
-        id_vars=["timestamp"],
-        var_name="appliance",
-        value_name="consumption"
+# 2) Pivot 2015 & 2035 auf (month, day_type, time) × appliances ---------------
+def pivot_year(df, year):
+    df_y = df[df["year"]==year]
+    # ggf. groupby, falls mehrfach pro Kombination
+    df_y = (
+      df_y
+      .groupby(["month","day_type","time","appliances"], as_index=False)
+      ["power_(mw)"]
+      .mean()
     )
-    df35_long = df35.melt(
-        id_vars=["timestamp"],
-        var_name="appliance",
-        value_name="consumption"
-    )
-
-    # 5) Saisonale Keys extrahieren
-    for df in (df15_long, df35_long):
-        df["month"] = df["timestamp"].dt.month
-        df["hour"]  = df["timestamp"].dt.hour
-
-    # 6) Gruppenmittelwerte für 2015 & 2035
-    g15 = (
-        df15_long
-        .groupby(["appliance", "month", "hour"])["consumption"]
-        .mean()
-        .rename("c15")
-    )
-    g35 = (
-        df35_long
-        .groupby(["appliance", "month", "hour"])["consumption"]
-        .mean()
-        .rename("c35")
-    )
-    g = pd.concat([g15, g35], axis=1).reset_index()
-
-    # 7) Linear interpolieren pro saisonaler Gruppe
-    g["c2024"] = (1 - f) * g["c15"] + f * g["c35"]
-
-    # 8) Merge zurück auf jede Timestamp+Appliance
-    df2024_long = (
-        df15_long[["timestamp", "appliance", "month", "hour"]]
-        .merge(
-            g[["appliance", "month", "hour", "c2024"]],
-            on=["appliance", "month", "hour"]
-        )
-        .rename(columns={"c2024": "consumption_kW"})
-        [["timestamp", "appliance", "consumption_kW"]]
+    # in MW → kW
+    df_y["power_kw"] = df_y["power_(mw)"]
+    # pivot
+    return (
+      df_y
+      .pivot(index=["month","day_type","time"],
+             columns="appliances",
+             values="power_kw")
+      .sort_index()
     )
 
-    # 9) Pivot zurück ins Wide-Format
-    df2024_wide = (
-        df2024_long
-        .pivot(index="timestamp", columns="appliance", values="consumption_kW")
-        .reset_index()
-    )
+pivot15 = pivot_year(df_raw, 2015)
+pivot35 = pivot_year(df_raw, 2035)
 
-    # 10) Spalten-Reihenfolge wie im Original (timestamp zuerst)
-    original_cols = [c for c in df15.columns]
-    # sicherstellen, dass 'timestamp' an erster Stelle steht
-    cols = ["timestamp"] + [c for c in original_cols if c != "timestamp"]
-    df2024_wide = df2024_wide[cols]
+# 3) Saisonale Interpolation für 2024 ----------------------------------------
+pivot24 = (1 - f) * pivot15 + f * pivot35
 
-    # 11) CSV schreiben
-    out_path = OUT_DIR / f"2024-{m:02d}.csv"
-    df2024_wide.to_csv(out_path, index=False)
-    print(f"Wrote seasonal‐interpolated (wide) {out_path.name}")
+# 4) Voller Zeitstempel-Kalender 2024 auf 15-Min-Raster ----------------------
+rng = pd.date_range(
+    "2024-01-01", "2024-12-31 23:45:00",
+    freq="15T",
+    tz="Europe/Zurich"
+)
+df_cal = pd.DataFrame({"timestamp": rng})
+# Keys zum Mergen
+df_cal["month"]    = df_cal["timestamp"].dt.month
+df_cal["day_type"] = df_cal["timestamp"].dt.weekday.map(lambda d: "weekday" if d<5 else "weekend")
+df_cal["time"]     = df_cal["timestamp"].dt.strftime("%H:00:00")
+
+# 5) Merge kalendarisch mit dem interpolierten Profil ------------------------
+df_merged = (
+    df_cal
+    .merge(pivot24.reset_index(), on=["month","day_type","time"], how="left")
+    # drop helper cols
+    .drop(columns=["month","day_type","time"])
+)
+
+# 6) Für jeden Monat ins Wide-CSV splittieren ----------------------------------
+for m in range(1,13):
+    df_m = df_merged[df_merged["timestamp"].dt.month == m]
+    # Spalten in der Original-Reihenfolge von 2015
+    cols2015 = pd.read_csv(BASE/"2015"/f"2015-{m:02d}.csv", nrows=1).columns.tolist()
+    df_out   = df_m[cols2015]
+    outpath  = OUT_DIR / f"2024-{m:02d}.csv"
+    df_out.to_csv(outpath, index=False)
+    print(f"Wrote {outpath}")
