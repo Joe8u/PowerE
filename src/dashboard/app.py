@@ -6,7 +6,8 @@ import dash_bootstrap_components as dbc
 app = Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
-    use_pages=True           # wichtig, falls du dash_pages nutzt
+    use_pages=True,
+    suppress_callback_exceptions=True   # ← ADD THIS
 )
 
 server = app.server
