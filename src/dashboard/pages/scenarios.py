@@ -1,5 +1,7 @@
 # src/dashboard/pages/scenarios.py
-from dash import html, dcc
+from dash import register_page, html, dcc, Input, Output, callback
+register_page("scenarios", path="/scenarios", title="Scenarios")
+layout = html.Div([...])
 
 # Layout für die Szenarioanalyse-Seite
 layout = html.Div([

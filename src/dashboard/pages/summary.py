@@ -1,7 +1,10 @@
 # src/dashboard/pages/summary.py
 import pandas as pd
-from dash import dcc, html
+from dash import register_page, html, dcc, Input, Output, callback
 from dash.dependencies import Input, Output
+
+register_page("summary", path="/", title="Summary")
+layout = html.Div([...])
 
 def layout():
     return html.Div([

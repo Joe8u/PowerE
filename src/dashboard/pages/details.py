@@ -53,10 +53,10 @@ layout = html.Div([
 
 # 5) Wire up the callback with the Pages API’s decorator
 @callback(
-    Output("time-series-graph", "figure"),
-    Input("appliance-dropdown", "value"),
-    Input("date-picker", "start_date"),
-    Input("date-picker", "end_date"),
+    Output("time-series-graph","figure"),
+    Input("appliance-dropdown","value"),
+    Input("date-picker","start_date"),
+    Input("date-picker","end_date"),
 )
 def update_graph(appliance, start_date, end_date):
     # Filter data
