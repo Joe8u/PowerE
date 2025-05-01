@@ -1,138 +1,61 @@
 # src/dashboard/pages/details.py
+
+from dash import html, dcc, Input, Output
+import dash_bootstrap_components as dbc
+import plotly.express as px
 import pandas as pd
-from datetime import datetime, timedelta
-from dash import dcc, html
-from dash.dependencies import Input, Output
+from app import app  # oder: from ..app import app, server
 
-# Load a sample CSV to extract appliance names
-_df0 = pd.read_csv(
-    "data/processed/lastprofile/2015/2015-01.csv",
-    parse_dates=["timestamp"],
-)
-APPLIANCES = sorted([c for c in _df0.columns if c != "timestamp"] )
-YEARS = [2015, 2035, 2050]
-MONTH_OPTIONS = [
-    {"label": datetime(1900, m, 1).strftime("%B"), "value": m}
-    for m in range(1, 13)
-]
+# 1) Daten einmal laden (kann je nach Größe auch als dcc.Store erfolgen)
+df = pd.concat([
+    pd.read_csv(f"data/processed/lastprofile/2024/2024-{m:02d}.csv", parse_dates=["timestamp"])
+    for m in range(1,13)
+])
+df["timestamp"] = pd.to_datetime(df["timestamp"])
 
-# Layout definition
+# Liste aller Appliances
+APPLIANCES = [c for c in df.columns if c != "timestamp"]
+
 layout = html.Div([
-    html.H2("Detailprofil-Analyse"),
-    html.Div([
-        html.Label("Appliance:"),
-        dcc.Dropdown(
-            id="details-appliance-dropdown",
-            options=[{"label": a, "value": a} for a in APPLIANCES],
-            value=APPLIANCES[0],
-            clearable=False
-        )
-    ], style={"width": "300px"}),
-    html.Div([
-        dcc.Tabs(
-            id="details-view-tabs",
-            value="day",
-            children=[
-                dcc.Tab(label="Tag", value="day"),
-                dcc.Tab(label="Woche", value="week"),
-                dcc.Tab(label="Monat", value="month"),
-            ]
-        ),
-        html.Div(id="details-date-picker-container")
-    ], style={"marginTop": "20px"}),
-    dcc.Graph(id="details-graph")
+    html.H2("Detail-Analyse: Lastprofil-Zeitreihen"),
+    dbc.Row([
+        dbc.Col([
+            html.Label("Appliance auswählen"),
+            dcc.Dropdown(
+                id="appliance-dropdown",
+                options=[{"label": a, "value": a} for a in APPLIANCES],
+                value=APPLIANCES[0],
+                clearable=False
+            ),
+        ], width=4),
+        dbc.Col([
+            html.Label("Zeitbereich wählen"),
+            dcc.DatePickerRange(
+                id="date-picker",
+                start_date="2024-01-01",
+                end_date="2024-12-31",
+                display_format="YYYY-MM-DD"
+            ),
+        ], width=5),
+    ], className="mb-4"),
+    dcc.Graph(id="time-series-graph")
 ])
 
-# Helper to load CSV per year/month
-def load_month_csv(year: int, month: int) -> pd.DataFrame:
-    path = f"data/processed/lastprofile/{year}/{year}-{month:02d}.csv"
-    df = pd.read_csv(path, parse_dates=["timestamp"]).set_index("timestamp")
-    return df
-
-# Register callbacks function
-def register_callbacks(app):
-    @app.callback(
-        Output("details-date-picker-container", "children"),
-        Input("details-view-tabs", "value")
+@app.callback(
+    Output("time-series-graph", "figure"),
+    Input("appliance-dropdown", "value"),
+    Input("date-picker", "start_date"),
+    Input("date-picker", "end_date"),
+)
+def update_graph(appliance, start_date, end_date):
+    dff = df[
+        (df["timestamp"] >= start_date) & 
+        (df["timestamp"] <= end_date)
+    ]
+    fig = px.line(
+        dff, x="timestamp", y=appliance,
+        title=f"{appliance} Verbrauch von {start_date} bis {end_date}",
+        labels={"timestamp":"Zeit", appliance:"Leistung (kW)"}
     )
-    def render_date_picker(view):
-        today = datetime.today()
-        if view == "day":
-            return html.Div([
-                html.Label("Wähle Tag:"),
-                dcc.DatePickerSingle(
-                    id="details-daily-picker",
-                    date=today.date(),
-                    display_format="YYYY-MM-DD",
-                )
-            ])
-        elif view == "week":
-            monday = today - timedelta(days=today.weekday() + 7)
-            sunday = monday + timedelta(days=6)
-            return html.Div([
-                html.Label("Wähle Woche:"),
-                dcc.DatePickerRange(
-                    id="details-weekly-picker",
-                    start_date=monday.date(),
-                    end_date=sunday.date(),
-                    display_format="YYYY-MM-DD",
-                )
-            ])
-        else:
-            return html.Div([
-                html.Label("Jahr:"),
-                dcc.Dropdown(
-                    id="details-year-dropdown",
-                    options=[{"label": y, "value": y} for y in YEARS],
-                    value=YEARS[0],
-                    clearable=False,
-                    style={"width":"120px","display":"inline-block","marginRight":"20px"}
-                ),
-                html.Label("Monat:"),
-                dcc.Dropdown(
-                    id="details-month-dropdown",
-                    options=MONTH_OPTIONS,
-                    value=today.month,
-                    clearable=False,
-                    style={"width":"200px","display":"inline-block"}
-                )
-            ])
-
-    @app.callback(
-        Output("details-graph", "figure"),
-        Input("details-appliance-dropdown", "value"),
-        Input("details-view-tabs", "value"),
-        Input("details-daily-picker", "date"),
-        Input("details-weekly-picker", "start_date"),
-        Input("details-weekly-picker", "end_date"),
-        Input("details-year-dropdown", "value"),
-        Input("details-month-dropdown", "value"),
-    )
-    def update_graph(appliance, view, day_date, week_start, week_end, year, month):
-        import plotly.express as px
-        # Day view
-        if view == "day" and day_date:
-            dt = datetime.fromisoformat(day_date)
-            df = load_month_csv(dt.year, dt.month)
-            df_day = df.loc[dt.strftime("%Y-%m-%d")]
-            fig = px.line(df_day, y=appliance)
-            fig.update_layout(title=f"{appliance} am {dt.date()}")
-            return fig
-        # Week view
-        if view == "week" and week_start and week_end:
-            start = datetime.fromisoformat(week_start)
-            end = datetime.fromisoformat(week_end) + timedelta(days=1) - timedelta(minutes=15)
-            df = load_month_csv(start.year, start.month)
-            if start.month != end.month:
-                df = pd.concat([df, load_month_csv(end.year, end.month)])
-            df_week = df.loc[start:end]
-            fig = px.line(df_week, y=appliance)
-            fig.update_layout(title=f"{appliance}: Woche {start.date()}–{end.date()}")
-            return fig
-        # Month view
-        if view == "month" and year and month:
-            df = load_month_csv(year, month)
-            fig = px.line(df, y=appliance)
-            fig.update_layout(title=f"{appliance}: {year}-{month:02d}")
-            return fig
-        return px.line()
+    fig.update_layout(transition_duration=300)
+    return fig
