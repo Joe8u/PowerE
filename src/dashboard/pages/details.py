@@ -29,9 +29,12 @@ layout = html.Div([
     Input("date-picker","end_date"),
 )
 def update_graph(appliance, start, end):
-    start_dt = datetime.datetime.fromisoformat(start)
-    end_dt   = datetime.datetime.fromisoformat(end)
-    # Nur diese Appliance & diesen Zeitraum laden
-    df = load_appliances([appliance], start_dt, end_dt, year=2024)
+    import sys
+    print(f"[DEBUG details] appliance={appliance}, start={start}, end={end}", file=sys.stderr)
+    df = load_appliances([appliance], 
+                         datetime.datetime.fromisoformat(start), 
+                         datetime.datetime.fromisoformat(end), 
+                         year=2024)
+    print(f"[DEBUG details] loaded {len(df)} rows", file=sys.stderr)
     fig = px.line(df, x=df.index, y=appliance)
     return fig
