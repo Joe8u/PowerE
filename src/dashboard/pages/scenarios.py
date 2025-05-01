@@ -1,13 +1,17 @@
+#!/usr/bin/env python3
 # src/dashboard/pages/scenarios.py
-from dash import register_page, html, dcc, Input, Output, callback
-register_page("scenarios", path="/scenarios", title="Scenarios")
-layout = html.Div([...])
 
-# Layout für die Szenarioanalyse-Seite
+from dash import register_page, html, dcc, callback, Input, Output
+import plotly.express as px
+
+# 1) Seite registrieren
+register_page("scenarios", path="/scenarios", title="Scenarios")
+
+# 2) Modul-level layout
 layout = html.Div([
     html.H1("Szenarioanalyse"),
     html.P("Interaktive Analyse von Lastverschiebungsszenarien."),
-    dcc.Graph(id="scenario-plot"),  # Platzhalter für ein Diagramm
+    dcc.Graph(id="scenario-plot"),
     dcc.Slider(
         id="compensation-slider",
         min=0,
@@ -19,26 +23,17 @@ layout = html.Div([
     ),
 ])
 
-# Funktion zum Registrieren von Callbacks
-def register_callbacks(app):
-    """
-    Registriert Callbacks für die Szenarioanalyse-Seite.
-    :param app: Dash-App-Instanz
-    """
-    from dash.dependencies import Input, Output
-
-    @app.callback(
-        Output("scenario-plot", "figure"),
-        [Input("compensation-slider", "value")]
+# 3) Callback mit Pages-API
+@callback(
+    Output("scenario-plot", "figure"),
+    Input("compensation-slider", "value")
+)
+def update_scenario_plot(compensation_value):
+    # Dummy-Plot als Platzhalter
+    fig = px.line(
+        x=[1, 2, 3],
+        y=[compensation_value, compensation_value * 2, compensation_value * 3],
+        labels={"x": "Szenario", "y": "Netto-Mehrwert"},
+        title=f"Netto-Mehrwert bei {compensation_value}% Rabatt"
     )
-    def update_scenario_plot(compensation_value):
-        """
-        Platzhalter-Callback: Aktualisiert das Diagramm basierend auf dem Kompensationsrabatt.
-        """
-        # Beispiel: Dummy-Plot (später mit echten Daten ersetzen)
-        return {
-            "data": [
-                {"x": [1, 2, 3], "y": [compensation_value, compensation_value * 2, compensation_value * 3], "type": "line"}
-            ],
-            "layout": {"title": f"Netto-Mehrwert bei {compensation_value}% Rabatt"}
-        }
+    return fig
