@@ -1,14 +1,17 @@
 # src/dashboard/app.py
 import dash
 from dash import Dash
+from pathlib import Path
 import dash_bootstrap_components as dbc
+
+PAGES_FOLDER = str(Path(__file__).parent / "pages")
 
 app = Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
     use_pages=True,
-    pages_folder="pages",
-    suppress_callback_exceptions=True   # ← ADD THIS
+    pages_folder=PAGES_FOLDER,
+    suppress_callback_exceptions=True  
 )
 
 server = app.server

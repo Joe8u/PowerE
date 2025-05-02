@@ -66,7 +66,20 @@ def process_month(df_year: pd.DataFrame, year: int, month: int, out_base: str):
     # Ausgabe
     os.makedirs(out_base, exist_ok=True)
     out_file = os.path.join(out_base, f"{year}-{month:02d}.csv")
-    df_out.reset_index().rename(columns={"index": "timestamp"}).to_csv(out_file, index=False)
+        # 1) Reset index und Spalte umbenennen
+
+    df_export = df_out.reset_index().rename(columns={"index": "timestamp"})
+    # 2) Timestamp von tz-aware auf tz-naiv zurücksetzen,
+    #    ohne die angezeigte Uhrzeit zu verändern
+   # Da timestamp schon tz-aware ist, nur noch konvertieren und dann naiv machen:
+    df_export["timestamp"] = (
+       df_export["timestamp"]
+           .dt.tz_convert("Europe/Zurich")  # in lokale Zeit wandeln
+           .dt.tz_localize(None)            # Zeitzone wieder abziehen (Uhrzeit bleibt stehen)
+   )
+
+    # 3) CSV schreiben – jetzt stehen nur noch naive Zeiten in der Datei
+    df_export.to_csv(out_file, index=False)
     print(f"  → geschrieben: {out_file}")
 
 
