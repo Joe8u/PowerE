@@ -5,10 +5,11 @@ import os
 from pathlib import Path
 
 # 1) Make sure 'src' is on PYTHONPATH so that `import dashboard.app` works.
-ROOT = Path(__file__).parent
-SRC  = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
+root = Path(__file__).parent
+src  = root / "src"
+sys.path.insert(0, src)
+if str(src) not in sys.path:
+    sys.path.insert(0, str(src))
 
 # 2) Pre‐import the Dash app module under its correct name
 #    This ensures that sys.modules["dashboard.app"] exists
