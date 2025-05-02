@@ -4,12 +4,15 @@ from dash import Dash
 from pathlib import Path
 import dash_bootstrap_components as dbc
 
-# ➜ the directory on disk that actually contains your page modules:
+# 1️⃣ Define where your pages live
+PAGES_FOLDER = str(Path(__file__).parent / "pages")
 
+# 2️⃣ Tell Dash to load them
 app = Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
     use_pages=True,
+    pages_folder=PAGES_FOLDER,
     suppress_callback_exceptions=True,
 )
 
