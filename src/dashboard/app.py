@@ -11,7 +11,6 @@ app = Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
     use_pages=True,
-    pages_folder=str(PAGES_FOLDER),           # ← must point here
     suppress_callback_exceptions=True,
 )
 
