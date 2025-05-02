@@ -1359,3 +1359,25 @@ Read port: 60499
 1746178116820	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
 UNSUPPORTED (log once): POSSIBLE ISSUE: unit 1 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
 1746178123268	Marionette	INFO	Stopped listening on port 60499
+1746178250495	geckodriver	INFO	Listening on 127.0.0.1:60627
+1746178251076	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/opt/homebrew/bin/fire ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/94/qb4h3ndj5kbdnm3m3qh9cpv80000gn/T/rust_mozprofilecLBfgB"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1746178251410	Marionette	INFO	Marionette enabled
+1746178251608	Marionette	INFO	Listening on port 60636
+WebDriver BiDi listening on ws://127.0.0.1:60628
+Read port: 60636
+1746178251735	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 1 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+1746178257943	Marionette	INFO	Stopped listening on port 60636
+1746178318136	geckodriver	INFO	Listening on 127.0.0.1:60713
+1746178318706	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/opt/homebrew/bin/fire ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/94/qb4h3ndj5kbdnm3m3qh9cpv80000gn/T/rust_mozprofileTg6EEs"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1746178319065	Marionette	INFO	Marionette enabled
+1746178319250	Marionette	INFO	Listening on port 60720
+WebDriver BiDi listening on ws://127.0.0.1:60714
+Read port: 60720
+1746178319372	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 1 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+1746178340772	Marionette	INFO	Stopped listening on port 60720

@@ -16,11 +16,14 @@ def test_details_layout_and_callback(dash_duo, dash_app):
 
     # Navigate to the Details page
         # instead build the full URL for the details page
-    details_url = f"{dash_duo.server_url}/details"
-    dash_duo.wait_for_page(details_url, timeout=5)
+    # Click on the "Details" nav link so that Dash's client-side router loads it
+    nav_details = dash_duo.find_element("a[href='/details']")
+    nav_details.click()
+    # now wait for your Details page's <h2> to appear
+    dash_duo.wait_for_element("h2", timeout=10)
 
     # Wait for the header to appear and verify its text
-    header = dash_duo.wait_for_element("h2", timeout=5)
+    header = dash_duo.wait_for_element("h2", timeout=20)
     assert "Detail-Analyse" in header.text
 
     # Verify the appliance dropdown exists
