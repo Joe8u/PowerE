@@ -979,3 +979,15 @@ Read port: 57838
 UNSUPPORTED (log once): POSSIBLE ISSUE: unit 1 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
 console.error: [Exception... "Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIContentSniffer.getMIMETypeFromContent]"  nsresult: "0x80040111 (NS_ERROR_NOT_AVAILABLE)"  location: "JS frame :: resource:///modules/FaviconLoader.sys.mjs :: onStopRequest :: line 300"  data: no]
 1746175289381	Marionette	INFO	Stopped listening on port 57838
+1746175612498	geckodriver	INFO	Listening on 127.0.0.1:58076
+1746175613084	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/opt/homebrew/bin/fire ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/94/qb4h3ndj5kbdnm3m3qh9cpv80000gn/T/rust_mozprofile3eRl3R"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1746175613448	Marionette	INFO	Marionette enabled
+1746175613663	Marionette	INFO	Listening on port 58083
+WebDriver BiDi listening on ws://127.0.0.1:58077
+Read port: 58083
+1746175613762	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 1 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+console.error: [Exception... "Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIContentSniffer.getMIMETypeFromContent]"  nsresult: "0x80040111 (NS_ERROR_NOT_AVAILABLE)"  location: "JS frame :: resource:///modules/FaviconLoader.sys.mjs :: onStopRequest :: line 300"  data: no]
+1746175624804	Marionette	INFO	Stopped listening on port 58083

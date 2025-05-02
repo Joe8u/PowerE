@@ -5,7 +5,7 @@ from dash import register_page, html, dcc, callback, Input, Output
 import plotly.express as px
 
 # 1) Seite registrieren
-register_page("scenarios", path="/scenarios", title="Scenarios")
+register_page(__name__, path="/scenarios", title="Scenarios")
 
 # 2) Modul-level layout
 layout = html.Div([
