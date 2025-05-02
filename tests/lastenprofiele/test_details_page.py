@@ -15,7 +15,9 @@ def test_details_layout_and_callback(dash_duo, dash_app):
     dash_duo.start_server(dash_app)
 
     # Navigate to the Details page
-    dash_duo.wait_for_page("/details", timeout=5)
+        # instead build the full URL for the details page
+    details_url = f"{dash_duo.server_url}/details"
+    dash_duo.wait_for_page(details_url, timeout=5)
 
     # Wait for the header to appear and verify its text
     header = dash_duo.wait_for_element("h2", timeout=5)
