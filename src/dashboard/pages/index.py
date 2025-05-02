@@ -3,12 +3,7 @@ from dash import register_page, html, dcc, callback, Input, Output
 import pandas as pd
 import plotly.express as px
 
-# 1) register this as the root page
-register_page(__name__,
-    path="/",
-    title="Executive Summary",
-    name="Summary"       # optional but gives you a default nav label
-)
+register_page(__name__, path="/", title="Executive Summary")
 
 DF_DUMMY = pd.DataFrame({
     "Kategorie": ["Spot Einsparung", "Kompensation"],
@@ -17,7 +12,7 @@ DF_DUMMY = pd.DataFrame({
 
 layout = html.Div([
     dcc.Interval(id="summary-trigger", interval=1, max_intervals=1),
-    html.H2("Executive Summary"),              # ← this is the <h2> your test is looking for
+    html.H2("Executive Summary"),           # ← now your test will find this
     html.Div([
         html.H4("Netto-Mehrwert (CHF)"),
         html.Div(id="summary-net-value")
