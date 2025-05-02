@@ -4,13 +4,14 @@ from dash import Dash
 from pathlib import Path
 import dash_bootstrap_components as dbc
 
-PAGES_FOLDER = str(Path(__file__).parent / "pages")
+# ➜ the directory on disk that actually contains your page modules:
+PAGES_FOLDER = Path(__file__).parent / "pages"
 
 app = Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
     use_pages=True,
-    pages_folder=str(PAGES_FOLDER),
+    pages_folder=str(PAGES_FOLDER),           # ← must point here
     suppress_callback_exceptions=True,
 )
 
@@ -22,10 +23,10 @@ app.layout = dbc.Container([
         color="primary",
         dark=True,
         children=[
-            dbc.NavItem(dbc.NavLink("Summary",    href="/")),
-            dbc.NavItem(dbc.NavLink("Details",    href="/details")),
-            dbc.NavItem(dbc.NavLink("Scenarios",  href="/scenarios")),
+            dbc.NavItem(dbc.NavLink("Summary",   href="/")),
+            dbc.NavItem(dbc.NavLink("Details",   href="/details")),
+            dbc.NavItem(dbc.NavLink("Scenarios", href="/scenarios")),
         ]
     ),
-    dash.page_container       # hier werden deine pages gerendert
+    dash.page_container
 ])
