@@ -9,14 +9,15 @@ def dash_app():
 
 
 def go_to_details(dash_duo):
-    # 1) Wait for the summary page’s header to appear (client-side hydration)
+    # 1) Wait for the summary page’s header to appear (client‐side hydration)
     dash_duo.wait_for_element("h2", timeout=10)
 
     # 2) Click the Details nav-link (client-side router)
     link = dash_duo.find_element("a.nav-link[href='/details']")
     link.click()
 
-    # 3) Finally wait for the Details page header
+    # 3) Wait for the URL to update, then the Details page header
+    dash_duo.wait_for_page(f"{dash_duo.server_url}/details", timeout=5)
     return dash_duo.wait_for_element("h2", timeout=10)
 
 
@@ -33,11 +34,11 @@ def test_details_layout_smoke(dash_duo, dash_app):
 
 
 def test_details_callback_updates_graph(dash_duo, dash_app):
-    """Verify that changing the dropdown triggers the time-series callback."""
+    """Verify that changing the dropdown triggers the time‐series callback."""
     dash_duo.start_server(dash_app)
     go_to_details(dash_duo)
 
-    # Trigger the callback by selecting the 2nd appliance
+    # Trigger the callback by selecting the 2nd appliance (use `index=`, not `option_index=`)
     dash_duo.select_dcc_dropdown("#appliance-dropdown", index=1)
 
     # Wait for the Plotly figure to render
@@ -46,14 +47,15 @@ def test_details_callback_updates_graph(dash_duo, dash_app):
 
 
 def test_nav_to_details_uses_client_router(dash_duo, dash_app):
-    """Ensure that we’re using the client‐side router to navigate to Details."""
+    """Ensure we’re using the client‐side router to navigate to Details."""
     dash_duo.start_server(dash_app)
 
-    # Wait for summary to load, then click into Details
+    # Wait for summary, then click into Details
     dash_duo.wait_for_element("h2", timeout=10)
     nav = dash_duo.find_element("a.nav-link[href='/details']")
     nav.click()
 
-    # Should immediately render the Details header without a full reload
+    # Immediately render Details header without full reload
+    dash_duo.wait_for_page(f"{dash_duo.server_url}/details", timeout=5)
     header = dash_duo.wait_for_element("h2", timeout=5)
     assert header.text.startswith("Detail-Analyse")
