@@ -7,8 +7,9 @@ from plotly.graph_objs import Figure
 # fixture to spin up the Dash app
 @pytest.fixture
 def dash_app():
-    module = import_app("dashboard.app")      # liefert ein dict mit {'app': Dash-Instanz, 'server': …}
-    app = module["app"]                      # hol dir die Dash-Instanz
+    # import_app now returns the Dash() instance directly
+    app = import_app("dashboard.app")
+    return app                 
     return dash.Dash(__name__, server=app.server, routes_pathname_prefix="/test/")
 
 def test_details_layout_and_callback(dash_duo, dash_app):
