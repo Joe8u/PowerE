@@ -4,33 +4,40 @@ import pytest
 from dash.testing.application_runners import import_app
 from plotly.graph_objs import Figure
 
-# fixture to spin up the Dash app
+# Fixture to spin up the Dash app
 @pytest.fixture
 def dash_app():
-    # import_app now returns the Dash() instance directly
+    # import_app returns the Dash instance defined in dashboard.app
     app = import_app("dashboard.app")
-    return app                 
     return dash.Dash(__name__, server=app.server, routes_pathname_prefix="/test/")
 
+# Test the Details page layout and callback functionality
 def test_details_layout_and_callback(dash_duo, dash_app):
+    # Start the Dash app server
     dash_duo.start_server(dash_app)
-    dash_duo.wait_for_text("h2", "Detail-Analyse", timeout=5)
 
-    # Dropdown existiert
+    # Navigate to the Details page
+    dash_duo.wait_for_page("/details", timeout=5)
+
+    # Wait for the header to appear and verify its text
+    header = dash_duo.wait_for_element("h2", timeout=5)
+    assert "Detail-Analyse" in header.text
+
+    # Verify the appliance dropdown exists
     dropdown = dash_duo.find_element("#appliance-dropdown")
     assert dropdown is not None
 
-    # DatePicker existiert
+    # Verify the date picker range component exists
     datepicker = dash_duo.find_element("#date-picker")
     assert datepicker is not None
 
-    # Graph existiert
+    # Verify the graph component exists
     graph = dash_duo.find_element("#time-series-graph")
     assert graph is not None
 
-    # Callback auslösen: wähle eine Appliance und Datum
-    dropdown.send_keys("Computer")
-    # Warte auf initiale Figure
-    dash_duo.wait_for_element(".js-plotly-plot", timeout=10)
-    # Prüfe, dass die Figure Klasse 'plotly' enthält
-    assert "plotly" in dash_duo.find_element(".js-plotly-plot").get_attribute("class")
+    # Trigger the callback by selecting an appliance
+    dash_duo.select_dcc_dropdown("#appliance-dropdown", option_index=1)
+
+    # Wait for the Plotly figure to render
+    plot = dash_duo.wait_for_element(".js-plotly-plot", timeout=10)
+    assert "plotly" in plot.get_attribute("class")
