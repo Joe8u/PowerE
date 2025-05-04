@@ -44,13 +44,15 @@ def load_range(
     """
     if year is None:
         year = start.year
-    # Liste der Monate, die im Bereich liegen
     months = sorted({start.month, end.month}) if start.year == end.year else range(1,13)
-    dfs = []
+    dfs: List[pd.DataFrame] = []
     for m in months:
         df_m = load_month(year, m, tz)
         dfs.append(df_m)
     full = pd.concat(dfs)
+    # Index sortieren, damit label-based slicing funktioniert
+    full = full.sort_index()
+    # Slice per Label ab dem Start- bis zum Endzeitpunkt
     return full.loc[start:end]
 
 # 4) Lade nur einzelne Appliance-Spalten
@@ -66,7 +68,6 @@ def load_appliances(
     Das spart Speicher, wenn man nur wenige Appliances braucht.
     """
     df_range = load_range(start, end, year, tz)
-    cols = ["timestamp"] + [a for a in appliances if a in df_range.columns]
     return df_range[appliances]
 
 # 5) Chunked Loader für sehr große Dateien (falls nötig)
@@ -86,7 +87,7 @@ def load_range_chunked(
     if year is None:
         year = start.year
     months = sorted({start.month, end.month}) if start.year == end.year else range(1,13)
-    frames = []
+    frames: List[pd.DataFrame] = []
     for m in months:
         path = BASE_DIR/str(year)/f"{year}-{m:02d}.csv"
         for chunk in pd.read_csv(

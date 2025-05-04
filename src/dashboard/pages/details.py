@@ -2,7 +2,6 @@
 from dash import register_page, html, dcc, callback, Input, Output
 import dash_bootstrap_components as dbc
 import plotly.express as px
-import pandas as pd
 import datetime
 
 from data_loader.lastprofile import load_appliances, list_appliances
@@ -10,24 +9,33 @@ from data_loader.lastprofile import load_appliances, list_appliances
 # 1) Register the page
 register_page(__name__, path="/details", title="Details")
 
-# 2) (Optionally) preload a short period, or leave df=None until callback
-# We'll leave it out and load inside the callback to keep memory small.
-
-# 3) Module‐level layout only
-#    Notice: no function named "layout"!
+# 2) Konstanten und Appliance-Liste
 APPLIANCES = list_appliances(2024)
+ALL = "ALL"
 
+# 3) Layout: Multi-Select + Checkbox
 layout = html.Div([
     html.H2("Detail-Analyse: Lastprofil-Zeitreihen"),
     dbc.Row([
       dbc.Col([
-        html.Label("Appliance auswählen"),
+        html.Label("Appliances auswählen"),
         dcc.Dropdown(
           id="appliance-dropdown",
-          options=[{"label": a, "value": a} for a in APPLIANCES],
-          value=APPLIANCES[0],
+          options=[
+            {"label": "Alle Geräte", "value": ALL},
+            *[{"label": a, "value": a} for a in APPLIANCES]
+          ],
+          value=[ALL],
+          multi=True,
           clearable=False
         ),
+        dbc.Checklist(
+          id="cumulative-checkbox",
+          options=[{"label": "Kumulierten Verbrauch anzeigen", "value": "cumulative"}],
+          value=[],
+          inline=True,
+          className="mt-2"
+        )
       ], width=4),
       dbc.Col([
         html.Label("Zeitbereich wählen"),
@@ -42,33 +50,54 @@ layout = html.Div([
     dcc.Graph(id="time-series-graph")
 ])
 
-# 4) Callback: loads *only* the requested appliance & date span
+# 4) Callback: Multi, Kumuliert + korrekte Achsenzuweisung
 @callback(
     Output("time-series-graph", "figure"),
     Input("appliance-dropdown", "value"),
+    Input("cumulative-checkbox", "value"),
     Input("date-picker", "start_date"),
     Input("date-picker", "end_date"),
 )
-def update_graph(appliance, start, end):
-    # parse strings to datetimes
+def update_graph(selected_values, cumulative_flag, start, end):
+    # Datum parsen
     start_dt = datetime.datetime.fromisoformat(start)
     end_dt   = datetime.datetime.fromisoformat(end)
 
-    # load only what’s needed
+    # Auswahl normalisieren
+    if not selected_values or ALL in selected_values:
+        appliances = APPLIANCES
+    else:
+        appliances = selected_values
+
+    # Daten abrufen
     df = load_appliances(
-        appliances=[appliance],
+        appliances=appliances,
         start=start_dt,
         end=end_dt,
         year=2024
     )
 
-    # assume load_appliances returns a DataFrame indexed by timestamp
-    fig = px.line(
-        df,
-        x=df.index,
-        y=appliance,
-        title=f"{appliance} Verbrauch {start} bis {end}",
-        labels={"x": "Zeit", appliance: "Leistung (kW)"}
-    )
+    # Kumulierte Anzeige?
+    if "cumulative" in cumulative_flag:
+        total = df.sum(axis=1)
+        total_df = total.reset_index()
+        total_df.columns = ["timestamp", "value"]
+        fig = px.line(
+            total_df,
+            x="timestamp",
+            y="value",
+            title=f"Kumulierter Verbrauch {start} bis {end}",
+            labels={"timestamp": "Zeit", "value": "Leistung (kW)"}
+        )
+    else:
+        df_reset = df.reset_index()
+        fig = px.line(
+            df_reset,
+            x="timestamp",
+            y=appliances,
+            title=f"Verbrauch pro Appliance {start} bis {end}",
+            labels={"timestamp": "Zeit", "value": "Leistung (kW)", "variable": "Appliance"}
+        )
+
     fig.update_layout(transition_duration=300)
     return fig
