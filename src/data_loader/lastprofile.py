@@ -7,100 +7,110 @@ import datetime
 
 BASE_DIR = Path("data/processed/lastprofile")
 
-# 1) Meta-Info: Welche Appliances gibt es?
-def list_appliances(year: int) -> List[str]:
-    sample = pd.read_csv(BASE_DIR/str(year)/f"{year}-01.csv", nrows=1)
-    return [c for c in sample.columns if c != "timestamp"]
+# --- 0) Survey-Gruppen-Mapping (optional, nur wenn group=True) -------------
+group_map = {
+    "Geschirrspüler":                      ["Dishwasher"],
+    "Backofen und Herd":                   ["Cooking"],
+    "Fernseher und Entertainment-Systeme": ["TV", "STB", "DVB", "Music"],
+    "Bürogeräte":                          ["Computer"],
+    # Laundry: Waschmaschine + Tumble dryer
+    "Waschmaschine (Laundry)":             ["Washing machine", "Tumble dryer"],
+    # Staubsauger / Others kannst Du hier weglassen, wenn gewünscht
+}
 
-# 2) Lade genau einen Monat (alle Appliances)
+# 1) Meta-Info: Welche Appliances (oder Gruppen) gibt es?
+def list_appliances(
+    year: int,
+    *,
+    group: bool = False
+) -> List[str]:
+    """
+    Wenn group=False (Default): gibt die originalen Appliance-Spaltennamen
+    zurück (z. B. 'Computer', 'TV', ...).
+    Wenn group=True: gibt die Survey-Gruppennamen aus group_map zurück.
+    """
+    sample = pd.read_csv(
+        BASE_DIR/str(year)/f"{year}-01.csv",
+        nrows=1
+    )
+    raw = [c for c in sample.columns if c != "timestamp"]
+
+    if not group:
+        return raw
+    else:
+        return list(group_map.keys())
+
+# 2) Lade genau einen Monat (alle Appliances oder Gruppen)
 def load_month(
     year: int,
     month: int,
-    tz: str = "Europe/Zurich"
+    *,
+    tz: str = "Europe/Zurich",
+    group: bool = False
 ) -> pd.DataFrame:
     """
-    Lädt die CSV für Jahr/Monat, konvertiert Timestamp → naive datetime.
-    Gibt DataFrame mit Index timestamp und allen Appliance-Spalten zurück.
+    Lädt die CSV für Jahr/Monat, konvertiert Timestamp, und wenn group=True,
+    fasst die Original-Spalten gemäß group_map zusammen.
     """
     path = BASE_DIR/str(year)/f"{year}-{month:02d}.csv"
     df = pd.read_csv(path, parse_dates=["timestamp"])
+    # Timestamp → naive Lokalzeit
     df["timestamp"] = (
         pd.to_datetime(df["timestamp"], utc=True)
           .dt.tz_convert(tz)
           .dt.tz_localize(None)
     )
-    return df.set_index("timestamp")
+    df = df.set_index("timestamp")
 
-# 3) Lade Daten für einen beliebigen Zeitbereich (quer über Monate)
+    if not group:
+        return df
+
+    # --- grouping ---
+    df_grouped = pd.DataFrame(index=df.index)
+    for grp_name, cols in group_map.items():
+        existing = [c for c in cols if c in df.columns]
+        # falls überhaupt keine Spalte passt, liefere 0
+        df_grouped[grp_name] = df[existing].sum(axis=1) if existing else 0.0
+
+    return df_grouped
+
+# 3) Lade Daten für einen Bereich (quer über Monate)
 def load_range(
     start: datetime.datetime,
     end: datetime.datetime,
+    *,
     year: Optional[int] = None,
-    tz: str = "Europe/Zurich"
+    tz: str = "Europe/Zurich",
+    group: bool = False
 ) -> pd.DataFrame:
-    """
-    Lädt nur die Monats-Dateien, die in den Bereich fallen, und liefert
-    einen DataFrame mit allen Appliance-Spalten im gegebenen Zeitfenster.
-    """
     if year is None:
         year = start.year
-    months = sorted({start.month, end.month}) if start.year == end.year else range(1,13)
-    dfs: List[pd.DataFrame] = []
+    months = (
+        sorted({start.month, end.month})
+        if start.year == end.year
+        else range(1, 13)
+    )
+    parts: List[pd.DataFrame] = []
     for m in months:
-        df_m = load_month(year, m, tz)
-        dfs.append(df_m)
-    full = pd.concat(dfs)
-    # Index sortieren, damit label-based slicing funktioniert
-    full = full.sort_index()
-    # Slice per Label ab dem Start- bis zum Endzeitpunkt
+        parts.append(load_month(year, m, tz=tz, group=group))
+    full = pd.concat(parts).sort_index()
     return full.loc[start:end]
 
-# 4) Lade nur einzelne Appliance-Spalten
+# 4) Lade nur einzelne Appliances oder Gruppen
 def load_appliances(
     appliances: List[str],
     start: datetime.datetime,
     end: datetime.datetime,
-    year: Optional[int] = None,
-    tz: str = "Europe/Zurich"
-) -> pd.DataFrame:
-    """
-    Lädt für das gegebene Zeitfenster nur die angegebenen Appliance-Spalten.
-    Das spart Speicher, wenn man nur wenige Appliances braucht.
-    """
-    df_range = load_range(start, end, year, tz)
-    return df_range[appliances]
-
-# 5) Chunked Loader für sehr große Dateien (falls nötig)
-def load_range_chunked(
-    start: datetime.datetime,
-    end: datetime.datetime,
-    appliances: List[str],
+    *,
     year: Optional[int] = None,
     tz: str = "Europe/Zurich",
-    chunksize: int = 10_000
+    group: bool = False
 ) -> pd.DataFrame:
     """
-    Liest die CSVs in Chunks, filtert pro Chunk nach Zeitbereich und Spalten,
-    und rollt dann alle Teil-DataFrames zusammen.
-    Nützlich bei extrem großen Dateien.
+    Wenn group=False (Default): appliances bezieht sich auf RAW-Spalten
+    (z.B. ['Computer','TV']).
+    Wenn group=True: appliances bezieht sich auf group_map.keys()
+    (z.B. ['Geschirrspüler','Fernseher und Entertainment-Systeme',...]).
     """
-    if year is None:
-        year = start.year
-    months = sorted({start.month, end.month}) if start.year == end.year else range(1,13)
-    frames: List[pd.DataFrame] = []
-    for m in months:
-        path = BASE_DIR/str(year)/f"{year}-{m:02d}.csv"
-        for chunk in pd.read_csv(
-            path, parse_dates=["timestamp"], chunksize=chunksize
-        ):
-            # Zeitzone verwerfen
-            chunk["timestamp"] = (
-                pd.to_datetime(chunk["timestamp"], utc=True)
-                  .dt.tz_convert(tz)
-                  .dt.tz_localize(None)
-            )
-            mask = (chunk["timestamp"] >= start) & (chunk["timestamp"] <= end)
-            sel = chunk.loc[mask, ["timestamp"] + appliances]
-            if not sel.empty:
-                frames.append(sel.set_index("timestamp"))
-    return pd.concat(frames)
+    df = load_range(start, end, year=year, tz=tz, group=group)
+    return df[appliances]
