@@ -8,7 +8,14 @@ def regulation_graph():
     """
     DCC-Graph-Component für die tertiäre Regelleistung / Spotpreise.
     """
-    return dcc.Graph(id="regulation-graph")
+    return dcc.Graph(
+       id="regulation-graph",
+       config={
+           # Fügt in der Modebar den Autoscale-Button hinzu
+           "modeBarButtonsToAdd": ["resetScale2d"],
+           "displaylogo": False
+       }
+   )
 
 
 def make_regulation_figure(
@@ -66,8 +73,15 @@ def make_regulation_figure(
     fig.update_yaxes(title_text="Abruf (MW)", secondary_y=False)
     fig.update_yaxes(title_text="Preis (EUR/MWh)", secondary_y=True)
 
+    #automatische Neuskalierung bei Ein/Ausblenden
     fig.update_layout(
         title_text="Marktübersicht",
-        transition_duration=300
+        transition_duration=300,
+        legend=dict(
+            itemclick="toggle",    # beim Klick die Achsen neu autorangen
+            itemdoubleclick="toggleothers"
+        ),
+        yaxis=dict(autorange=True),
+        yaxis2=dict(autorange=True)
     )
     return fig

@@ -10,7 +10,7 @@ from data_loader.spot_price_loader           import load_spot_price_range
 from dashboard.components.details.controls            import ALL
 from dashboard.components.details.graphs.lastprofile_graphs import make_load_figure
 from dashboard.components.details.graphs.market_graphs     import make_regulation_figure
-from dashboard.components.details.graphs.cost_graphs       import cost_graph, make_cost_info
+from dashboard.components.details.graphs.cost_graphs       import make_cost_info
 from dashboard.components.details.graphs.cost2_graphs     import cost2_graph, make_cost2_figure
 
 @callback(
