@@ -30,20 +30,21 @@ def update_graph(selected_values, cumulative_flag, start, end):
     end_dt   = datetime.datetime.fromisoformat(end)
 
     # 2) Appliance‐Auswahl normalisieren
+    all_appliances = list_appliances(2024)
     if not selected_values or ALL in selected_values:
-        appliances = list_appliances(2024)
+        appliances = all_appliances
     else:
         appliances = selected_values
 
-    # 3) Lastprofil laden und Linie(n) zeichnen
-    df_load = load_appliances(
+    # 3) Gefiltertes Lastprofil laden und Linie(n) zeichnen
+    df_load_filt = load_appliances(
         appliances=appliances,
         start=start_dt,
         end=end_dt,
         year=2024
     )
     fig_load = make_load_figure(
-        df_load,
+        df_load_filt,
         appliances,
         start,
         end,
@@ -65,12 +66,21 @@ def update_graph(selected_values, cumulative_flag, start, end):
         end
     )
 
-    # 7) Kosten-Info (Spot- und Regelkosten)
-    cost_info = make_cost_info(df_load, df_spot, df_reg)
+    # 7a) Spot-Kosten aus gefilterten Daten
+    cost_filt = make_cost_info(df_load_filt, df_spot, df_reg)
+
+    # 7b) Regel-Kosten aus **allen** Geräten (unabhängig vom Filter)
+    df_load_all = load_appliances(
+        appliances=all_appliances,
+        start=start_dt,
+        end=end_dt,
+        year=2024
+    )
+    cost_all = make_cost_info(df_load_all, df_spot, df_reg)
 
     # 8) Alternative Kosten‐Grafik (kumulierte Kosten + Prozentanteile)
     fig_cost2 = make_cost2_figure(
-        df_load,
+        df_load_filt,
         appliances,
         df_spot,
         df_reg,
@@ -79,4 +89,10 @@ def update_graph(selected_values, cumulative_flag, start, end):
         end
     )
 
-    return fig_load, fig_reg, cost_info["spot"], cost_info["reg"], fig_cost2
+    return (
+        fig_load,
+        fig_reg,
+        cost_filt["spot"],   # Spot-Kosten gefiltert
+        cost_all ["reg"],    # Regel-Kosten gesamt
+        fig_cost2
+    )
