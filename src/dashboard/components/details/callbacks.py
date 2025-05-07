@@ -10,13 +10,14 @@ from data_loader.spot_price_loader           import load_spot_price_range
 from dashboard.components.details.controls            import ALL
 from dashboard.components.details.graphs.lastprofile_graphs import make_load_figure
 from dashboard.components.details.graphs.market_graphs     import make_regulation_figure
-from dashboard.components.details.graphs.cost_graphs       import make_cost_figure
+from dashboard.components.details.graphs.cost_graphs       import cost_graph, make_cost_info
 from dashboard.components.details.graphs.cost2_graphs     import cost2_graph, make_cost2_figure
 
 @callback(
     Output("time-series-graph", "figure"),
     Output("regulation-graph",   "figure"),
-    Output("cost-graph",         "figure"),
+    Output("spot-cost-total",    "children"),
+    Output("reg-cost-total",     "children"),
     Output("cost2-graph",        "figure"),
     Input("appliance-dropdown",  "value"),
     Input("cumulative-checkbox", "value"),
@@ -64,18 +65,13 @@ def update_graph(selected_values, cumulative_flag, start, end):
         end
     )
 
-    # 7) Kosten‐Grafik erzeugen
-    fig_cost = make_cost_figure(
-        df_load,
-        df_spot,
-        df_reg,
-        start,
-        end
-    )
+    # 7) Kosten-Info (Spot- und Regelkosten)
+    cost_info = make_cost_info(df_load, df_spot, df_reg)
 
     # 8) Alternative Kosten‐Grafik (kumulierte Kosten + Prozentanteile)
     fig_cost2 = make_cost2_figure(
         df_load,
+        appliances,
         df_spot,
         df_reg,
         fig_load.layout.xaxis.range,  # geteilte Zeitachse
@@ -83,4 +79,4 @@ def update_graph(selected_values, cumulative_flag, start, end):
         end
     )
 
-    return fig_load, fig_reg, fig_cost, fig_cost2
+    return fig_load, fig_reg, cost_info["spot"], cost_info["reg"], fig_cost2

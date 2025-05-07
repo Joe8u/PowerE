@@ -1,68 +1,62 @@
 # src/dashboard/components/details/graphs/cost_graphs.py
 
-from dash import dcc
-import plotly.express as px
+from dash import html
+import dash_bootstrap_components as dbc
 import pandas as pd
 
 def cost_graph():
     """
-    DCC‐Graph‐Component für die Appliance‐Kosten (Spot vs. Regel).
+    Statt Graph: eine Row mit zwei Cards,
+    in denen die Gesamtkosten stehen.
     """
-    return dcc.Graph(id="cost-graph")
+    return dbc.Row(
+        [
+            dbc.Col(html.Div(id="spot-cost-total"), width=6),
+            dbc.Col(html.Div(id="reg-cost-total"),  width=6),
+        ],
+        className="mb-4"
+    )
 
-def make_cost_figure(
+def make_cost_info(
     df_load: pd.DataFrame,
     df_spot: pd.DataFrame,
     df_reg: pd.DataFrame,
-    start: str,
-    end: str
 ):
     """
-    Berechnet gestapelte Spot‐ vs. Regel‐Kosten für die Summe aller Appliances.
-    x-Achse: Zeit
-    y-Achse: EUR
+    Berechnet:
+      - spot_cost_total: Summe(consumption * spot_price)
+      - reg_cost_total:  Summe(consumption * reg_price)
+    und gibt zwei Dash-HTML-Elemente zurück.
     """
-    # 1) Gesamtkonsum pro Intervall (kW als Proxy für kWh)
+    # 1) Verbrauch pro Intervall (kW als Proxy für kWh)
     cons = df_load.sum(axis=1)
 
-    # 2) Spot‐ und Regel‐Preise auf exact denselben Index bringen
+    # 2) Preise auf denselben Index
     spot_prices = df_spot["price_eur_mwh"].reindex(cons.index, fill_value=0)
     reg_prices  = df_reg["avg_price_eur_mwh"].reindex(cons.index, fill_value=0)
 
-    # 3) Kosten‐Beiträge
-    spot_cost = cons * spot_prices
-    reg_cost  = cons * reg_prices
+    # 3) Kosten aggregieren
+    spot_cost_total = (cons * spot_prices).sum()
+    reg_cost_total  = (cons * reg_prices ).sum()
 
-    # 4) DataFrame zusammenpacken
-    dfc = pd.DataFrame({
-        "timestamp":     cons.index,
-        "Spot-Kosten":   spot_cost,
-        "Regel-Kosten":  reg_cost,
-    })
-
-    # 5) In langes Format transformieren
-    dfm = dfc.melt(
-        id_vars="timestamp",
-        value_vars=["Spot-Kosten", "Regel-Kosten"],
-        var_name="Kostenart",
-        value_name="EUR"
+    # 4) Zwei Cards basteln
+    spot_card = dbc.Card(
+        [
+            dbc.CardHeader("Gesamtkosten Spot-Preis"),
+            dbc.CardBody(html.H4(f"{spot_cost_total:,.2f} €"))
+        ],
+        color="primary", inverse=True
+    )
+    reg_card = dbc.Card(
+        [
+            dbc.CardHeader("Gesamtkosten Regelenergie"),
+            dbc.CardBody(html.H4(f"{reg_cost_total:,.2f} €"))
+        ],
+        color="warning", inverse=True
     )
 
-    # 6) Gestapeltes Balkendiagramm
-    fig = px.bar(
-        dfm,
-        x="timestamp",
-        y="EUR",
-        color="Kostenart",
-        title=f"Variable Kosten {start} bis {end}",
-        labels={
-            "timestamp": "Zeit",
-            "EUR":       "Kosten (EUR)",
-            "Kostenart":"Beitrag"
-        }
-    )
-    fig.update_layout(
-        barmode="stack",
-        transition_duration=300,
-    )
-    return fig
+    # 5) Gib die beiden Cards als Dict für den Callback zurück
+    return {
+        "spot": spot_card,
+        "reg":  reg_card
+    }

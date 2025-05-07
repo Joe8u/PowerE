@@ -31,6 +31,7 @@ def make_regulation_figure(
             x=dfrr["timestamp"],
             y=dfrr["total_called_mw"],
             name="Abruf (MW)",
+            marker_color="#d35400",   # dunkleres Orange für Volumen
             opacity=0.6
         ),
         secondary_y=False
@@ -42,7 +43,8 @@ def make_regulation_figure(
             x=dfrr["timestamp"],
             y=dfrr["avg_price_eur_mwh"],
             name="Regelpreis (EUR/MWh)",
-            mode="lines"
+            mode="lines",
+            line=dict(color="#ff7f0e", width=2)  # Orange
         ),
         secondary_y=True
     )
@@ -54,7 +56,7 @@ def make_regulation_figure(
             y=dfsp["price_eur_mwh"],
             name="Spot-Preis (EUR/MWh)",
             mode="lines",
-            line=dict(dash="dot")
+            line=dict(color="#1f77b4", dash="dot", width=2)  # Blau
         ),
         secondary_y=True
     )
