@@ -19,12 +19,20 @@ from dashboard.components.details.graphs.cost2_graphs     import cost2_graph, ma
     Output("spot-cost-total",    "children"),
     Output("reg-cost-total",     "children"),
     Output("cost2-graph",        "figure"),
+    Output("load-container",    "style"),
+    Output("market-container",  "style"),
+    Output("cost2-graph-container", "style"),
     Input("appliance-dropdown",  "value"),
     Input("cumulative-checkbox", "value"),
     Input("date-picker",         "start_date"),
     Input("date-picker",         "end_date"),
+    Input("graph-selector",    "value"),
 )
-def update_graph(selected_values, cumulative_flag, start, end):
+def update_graph(selected_values, cumulative_flag, start, end, selected_graphs):
+     # Sichtbarkeit pro Grafik
+    style_load   = {} if "show_load"   in selected_graphs else {"display":"none"}
+    style_market = {} if "show_market" in selected_graphs else {"display":"none"}
+    style_cost2  = {} if "show_cost2"  in selected_graphs else {"display":"none"}
     # 1) Start‐ und End‐Datum parsen
     start_dt = datetime.datetime.fromisoformat(start)
     end_dt   = datetime.datetime.fromisoformat(end)
@@ -94,5 +102,8 @@ def update_graph(selected_values, cumulative_flag, start, end):
         fig_reg,
         cost_filt["spot"],   # Spot-Kosten gefiltert
         cost_all ["reg"],    # Regel-Kosten gesamt
-        fig_cost2
+        fig_cost2,
+        style_load,
+        style_market,
+        style_cost2
     )

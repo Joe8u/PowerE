@@ -19,17 +19,27 @@ register_page(__name__, path="/details", title="Details")
 layout = html.Div([
     html.H2("Detail-Analyse: Lastprofil-Zeitreihen"),
 
-    # Controls: Dropdown, DatePickerRange, Checkbox
+    # Controls: Dropdown, DatePickerRange, Checkbox, Graph-Selector
     make_controls(list_appliances(2024)),
 
-    # Grafiken
-    # 1) Verbrauch
-    time_series_graph(),
-
-    # 2) Regulierung / Spot
-    regulation_graph(),
-
-    # 3) Kosten‐Grafik
+    # 1) Kosten‐Übersicht (Spot- und Regelkosten) immer anzeigen
     cost_graph(),
-    cost2_graph(),
+
+    # 2) Verbrauchs-Zeitreihe (toggle-bar)
+    html.Div(
+        time_series_graph(),
+        id="load-container"
+    ),
+
+    # 3) Regulierung / Spot-Preise (toggle-bar)
+    html.Div(
+        regulation_graph(),
+        id="market-container"
+    ),
+
+    # 4) Kumulierte Kosten-Grafik (toggle-bar)
+    html.Div(
+        cost2_graph(),
+        id="cost2-graph-container"
+    ),
 ])
