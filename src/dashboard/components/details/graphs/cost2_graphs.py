@@ -67,7 +67,7 @@ def make_cost2_figure(
 
     # 7) Layout konfigurieren
     fig.update_layout(
-        title_text=f"Spotkosten und Gesamt-Regelenergie {start} bis {end}",
+        title_text="Spotkosten und Gesamt-Regelenergie",
         xaxis=dict(range=xaxis_range, title="Zeit"),
         yaxis=dict(title="Spotkosten per Intervall (EUR)"),
         transition_duration=300

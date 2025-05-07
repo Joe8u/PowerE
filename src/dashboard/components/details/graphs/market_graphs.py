@@ -67,7 +67,7 @@ def make_regulation_figure(
     fig.update_yaxes(title_text="Preis (EUR/MWh)", secondary_y=True)
 
     fig.update_layout(
-        title_text=f"Marktübersicht: {start} bis {end}",
+        title_text="Marktübersicht",
         transition_duration=300
     )
     return fig

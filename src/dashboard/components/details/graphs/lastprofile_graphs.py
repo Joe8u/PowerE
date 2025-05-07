@@ -29,7 +29,7 @@ def make_load_figure(df_load, appliances, start, end, cumulative):
             dfr,
             x="timestamp",
             y=appliances,
-            title=f"Verbrauch pro Appliance {start} bis {end}",
+            title="Verbrauch pro Appliance",
             labels={
                 "timestamp": "Zeit",
                 "value": "Leistung (kW)",
