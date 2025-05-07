@@ -35,8 +35,10 @@ def make_controls(appliances):
                         {"label": "Verbrauch",        "value": "show_load"},
                         {"label": "Marktübersicht",   "value": "show_market"},
                         {"label": "Spotkosten", "value": "show_cost2"},
+                        {"label": "Verbrauchs-Kennzahl",  "value": "show_consumption"},
+                         {"label": "Regelleistungs-Kennzahl","value": "show_regulation_volume"},
                     ],
-                    value=["show_load", "show_market", "show_cost2"],  # Default: alles an
+                    value=["show_load", "show_market", "show_cost2", "show_consumption",  "show_regulation_volume"],  # Default: alles an
                     inline=True,
                     className="mt-2"
                 ),

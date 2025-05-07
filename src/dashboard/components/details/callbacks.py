@@ -11,28 +11,42 @@ from dashboard.components.details.controls            import ALL
 from dashboard.components.details.graphs.lastprofile_graphs import make_load_figure
 from dashboard.components.details.graphs.market_graphs     import make_regulation_figure
 from dashboard.components.details.graphs.cost_graphs       import make_cost_info
-from dashboard.components.details.graphs.cost2_graphs     import cost2_graph, make_cost2_figure
+from dashboard.components.details.graphs.cost2_graphs      import cost2_graph, make_cost2_figure
+from dashboard.components.details.graphs.consumption_graphs import make_consumption_info
+from dashboard.components.details.graphs.regulation_volume_graphs import make_regulation_volume_info
 
 @callback(
-    Output("time-series-graph", "figure"),
-    Output("regulation-graph",   "figure"),
-    Output("spot-cost-total",    "children"),
-    Output("reg-cost-total",     "children"),
-    Output("cost2-graph",        "figure"),
-    Output("load-container",    "style"),
-    Output("market-container",  "style"),
-    Output("cost2-graph-container", "style"),
-    Input("appliance-dropdown",  "value"),
-    Input("cumulative-checkbox", "value"),
-    Input("date-picker",         "start_date"),
-    Input("date-picker",         "end_date"),
-    Input("graph-selector",    "value"),
+    # 1–6: Figures & Cards
+    Output("time-series-graph",      "figure"),
+    Output("regulation-graph",        "figure"),
+    Output("spot-cost-total",         "children"),
+    Output("reg-cost-total",          "children"),
+    Output("total-consumption",       "children"),
+    Output("total-regulation-volume", "children"),
+    Output("cost2-graph",             "figure"),
+
+    # 7–11: Styles
+    Output("load-container",          "style"),
+    Output("market-container",        "style"),
+    Output("cost2-graph-container",   "style"),
+    Output("consumption-container",   "style"),
+    Output("regulation-volume-container","style"),
+
+    # 12–16: Inputs
+    Input("appliance-dropdown",       "value"),
+    Input("cumulative-checkbox",      "value"),
+    Input("date-picker",              "start_date"),
+    Input("date-picker",              "end_date"),
+    Input("graph-selector",           "value"),
 )
 def update_graph(selected_values, cumulative_flag, start, end, selected_graphs):
-     # Sichtbarkeit pro Grafik
-    style_load   = {} if "show_load"   in selected_graphs else {"display":"none"}
-    style_market = {} if "show_market" in selected_graphs else {"display":"none"}
-    style_cost2  = {} if "show_cost2"  in selected_graphs else {"display":"none"}
+    # Sichtbarkeit pro Grafik
+    style_load          = {} if "show_load"            in selected_graphs else {"display":"none"}
+    style_market        = {} if "show_market"          in selected_graphs else {"display":"none"}
+    style_cost2         = {} if "show_cost2"           in selected_graphs else {"display":"none"}
+    style_consumption   = {} if "show_consumption"     in selected_graphs else {"display":"none"}
+    style_regulation_vol= {} if "show_regulation_volume" in selected_graphs else {"display":"none"}
+
     # 1) Start‐ und End‐Datum parsen
     start_dt = datetime.datetime.fromisoformat(start)
     end_dt   = datetime.datetime.fromisoformat(end)
@@ -77,7 +91,11 @@ def update_graph(selected_values, cumulative_flag, start, end, selected_graphs):
     # 7a) Spot-Kosten aus gefilterten Daten
     cost_filt = make_cost_info(df_load_filt, df_spot, df_reg)
 
-    # 7b) Regel-Kosten aus **allen** Geräten (unabhängig vom Filter)
+    # 7b) Gesamter Verbrauch (für neue Komponente)
+    cons_card      = make_consumption_info(df_load_filt)
+    reg_vol_card   = make_regulation_volume_info(df_reg)
+
+    # 7c) Regel-Kosten aus **allen** Geräten (unabhängig vom Filter)
     df_load_all = load_appliances(
         appliances=all_appliances,
         start=start_dt,
@@ -98,12 +116,18 @@ def update_graph(selected_values, cumulative_flag, start, end, selected_graphs):
     )
 
     return (
+        # 1–6: Figures & Cards
         fig_load,
         fig_reg,
-        cost_filt["spot"],   # Spot-Kosten gefiltert
-        cost_all ["reg"],    # Regel-Kosten gesamt
+        cost_filt["spot"],
+        cost_all["reg"],
+        cons_card,
+        reg_vol_card,
         fig_cost2,
+        # 7–11: Styles
         style_load,
         style_market,
-        style_cost2
+        style_cost2,
+        style_consumption,
+        style_regulation_vol,
     )

@@ -1,6 +1,7 @@
 # src/dashboard/pages/details.py
 
 from dash import register_page, html
+import dash_bootstrap_components as dbc
 from data_loader.lastprofile import list_appliances
 
 from dashboard.components.details.controls import make_controls
@@ -8,6 +9,8 @@ from dashboard.components.details.graphs.lastprofile_graphs import time_series_g
 from dashboard.components.details.graphs.market_graphs import regulation_graph
 from dashboard.components.details.graphs.cost_graphs       import cost_graph
 from dashboard.components.details.graphs.cost2_graphs        import cost2_graph
+from dashboard.components.details.graphs.consumption_graphs import consumption_graph
+from dashboard.components.details.graphs.regulation_volume_graphs import regulation_volume_graph
 
 # Damit der Callback-Decorator aktiv wird
 import dashboard.components.details.callbacks  # noqa: F401
@@ -24,6 +27,20 @@ layout = html.Div([
 
     # 1) Kosten‐Übersicht (Spot- und Regelkosten) immer anzeigen
     cost_graph(),
+
+    # 2) Gesamtverbrauch und Total-Regelenergie nebeneinander
+    dbc.Row([
+        dbc.Col(
+            consumption_graph(),
+            id="consumption-container",
+            width=6
+        ),
+        dbc.Col(
+            regulation_volume_graph(),
+            id="regulation-volume-container",
+            width=6
+        ),
+    ], className="mb-4"),
 
     # 2) Verbrauchs-Zeitreihe (toggle-bar)
     html.Div(
