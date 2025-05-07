@@ -56,16 +56,7 @@ def make_cost2_figure(
         mode="lines"
     ))
 
-    # 6) Annotation für Gesamt-Regelenergie
-    fig.add_annotation(
-        xref="paper", yref="paper",
-        x=0.99, y=0.95,
-        text=f"Total Regelenergie: {total_reg_mwh:.2f} MWh",
-        showarrow=False,
-        align="right"
-    )
-
-    # 7) Layout konfigurieren
+    # 6) Layout konfigurieren
     fig.update_layout(
         title_text="Spotkosten pro Intervall",
         xaxis=dict(range=xaxis_range, title="Zeit"),
