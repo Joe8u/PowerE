@@ -31,7 +31,7 @@ def make_controls(appliances):
         dcc.DatePickerRange(
           id="date-picker",
           start_date="2024-01-01",
-          end_date="2024-01-07",
+          end_date="2024-01-02",
           display_format="YYYY-MM-DD"
         ),
       ], width=5),
