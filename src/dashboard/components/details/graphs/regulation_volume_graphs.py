@@ -19,7 +19,7 @@ def make_regulation_volume_info(df_reg: pd.DataFrame) -> dbc.Card:
     und gibt eine Dash-Card mit der Kennzahl zurück.
     """
     # Zeitdifferenz in Stunden (Median-Intervall)
-    dt_h = df_reg.index.to_series().diff().dropna().dt.total_seconds().median() / 3600
+    dt_h = 0.25
     # Summe von MW * Stunden = MWh
     total_mwh = (df_reg["total_called_mw"] * dt_h).sum()
 
