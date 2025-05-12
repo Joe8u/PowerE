@@ -8,7 +8,7 @@ and writes the result to a separate processed CSV file for Question 3.
 Input:
     PowerE/data/raw/survey/Energieverbrauch und Teilnahmebereitschaft an Demand-Response-Programmen in Haushalten.csv
 Output:
-    PowerE/data/processed/survey/python preprocess_q4_accommodation.py
+    PowerE/data/processed/survey/question_3_household_size.csv
 
 Usage:
     python preprocess_q3_household_size.py
@@ -20,7 +20,7 @@ import pandas as pd
 RAW_DIR = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir, 'data', 'raw', 'survey')
 PROCESSED_DIR = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir, 'data', 'processed', 'survey')
 RAW_FILENAME = 'Energieverbrauch und Teilnahmebereitschaft an Demand-Response-Programmen in Haushalten.csv'
-OUTPUT_FILENAME = 'python preprocess_q4_accommodation.py'
+OUTPUT_FILENAME = 'question_3_household_size.csv'
 
 # Ensure the processed directory exists
 os.makedirs(PROCESSED_DIR, exist_ok=True)

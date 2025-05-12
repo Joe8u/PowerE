@@ -4,7 +4,16 @@ import os
 import pandas as pd
 
 # Directory where all the processed survey CSVs live
-BASE_DIR     = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir, 'data', 'processed', 'survey'))
+BASE_DIR = os.path.abspath(
+    os.path.join(
+        __file__,
+        os.pardir,  # survey_loader
+        os.pardir,  # data_loader
+        os.pardir,  # src
+        os.pardir,  # PowerE (Projekt-Root)
+        'data', 'processed', 'survey'
+    )
+)
     
 # Mapping of logical names to filenames
 _FILES = {

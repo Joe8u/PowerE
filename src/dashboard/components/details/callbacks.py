@@ -15,6 +15,10 @@ from dashboard.components.details.graphs.cost2_graphs      import cost2_graph, m
 from dashboard.components.details.graphs.consumption_graphs import make_consumption_info
 from dashboard.components.details.graphs.regulation_volume_graphs import make_regulation_volume_info
 
+from dashboard.components.details.survey_graphs.participation_graphs import make_participation_curve
+from dashboard.components.details.survey_graphs.shift_duration_all import make_all_shift_distributions
+
+
 @callback(
     # 1–6: Figures & Cards
     Output("time-series-graph",      "figure"),
@@ -24,6 +28,8 @@ from dashboard.components.details.graphs.regulation_volume_graphs import make_re
     Output("total-consumption",       "children"),
     Output("total-regulation-volume", "children"),
     Output("cost2-graph",             "figure"),
+    Output("participation-curve",     "figure"),
+    Output("shift-all-graph",         "figure"),
 
     # 7–11: Styles
     Output("load-container",          "style"),
@@ -115,6 +121,10 @@ def update_graph(selected_values, cumulative_flag, start, end, selected_graphs):
         end
     )
 
+    # 9) Teilnahme-Curve und Shift-Dauer
+    fig_part = make_participation_curve()
+    fig_shift = make_all_shift_distributions()
+
     return (
         # 1–6: Figures & Cards
         fig_load,
@@ -124,6 +134,9 @@ def update_graph(selected_values, cumulative_flag, start, end, selected_graphs):
         cons_card,
         reg_vol_card,
         fig_cost2,
+        fig_part,
+        fig_shift,
+
         # 7–11: Styles
         style_load,
         style_market,

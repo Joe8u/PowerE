@@ -1,6 +1,6 @@
 # src/dashboard/pages/details.py
 
-from dash import register_page, html
+from dash import register_page, html, dcc
 import dash_bootstrap_components as dbc
 from data_loader.lastprofile import list_appliances
 
@@ -11,6 +11,8 @@ from dashboard.components.details.graphs.cost_graphs       import cost_graph
 from dashboard.components.details.graphs.cost2_graphs        import cost2_graph
 from dashboard.components.details.graphs.consumption_graphs import consumption_graph
 from dashboard.components.details.graphs.regulation_volume_graphs import regulation_volume_graph
+from dashboard.components.details.survey_graphs.participation_graphs import make_participation_curve
+from dashboard.components.details.survey_graphs.shift_duration_all import make_all_shift_distributions
 
 # Damit der Callback-Decorator aktiv wird
 import dashboard.components.details.callbacks  # noqa: F401
@@ -42,21 +44,34 @@ layout = html.Div([
         ),
     ], className="mb-4"),
 
-    # 2) Verbrauchs-Zeitreihe (toggle-bar)
+    # 3) Verbrauchs-Zeitreihe (toggle-bar)
     html.Div(
         time_series_graph(),
         id="load-container"
     ),
 
-    # 3) Regulierung / Spot-Preise (toggle-bar)
+    # 4) Regulierung / Spot-Preise (toggle-bar)
     html.Div(
         regulation_graph(),
         id="market-container"
     ),
 
-    # 4) Kumulierte Kosten-Grafik (toggle-bar)
+    # 5) Kumulierte Kosten-Grafik (toggle-bar)
     html.Div(
         cost2_graph(),
         id="cost2-graph-container"
     ),
+
+    # 6) Teilnahme-Kurve
+    html.Div([
+        html.H3("Incentive vs. Teilnahmequote"),
+        dcc.Graph(id="participation-curve")
+    ], className="mb-4"),
+
+    # ... im layout-Block, z.B. nach dem Teilnahme-Curve-Abschnitt:
+    html.Div([
+        html.H3("Verschiebedauer-Verteilungen aller Geräte"),
+        dcc.Graph(id="shift-all-graph")
+    ], className="mb-4"),
+
 ])
