@@ -17,6 +17,8 @@ from dashboard.components.details.survey_graphs.shift_duration_all import calcul
 # Damit der Callback-Decorator aktiv wird
 import dashboard.components.details.callbacks  # noqa: F401
 
+from dashboard.components.details.graphs.per_appliance_comparison_graph import per_appliance_comparison_graph_component
+
 # Registriere die Seite bei Dash
 register_page(__name__, path="/details", title="Details")
 
@@ -72,6 +74,12 @@ layout = html.Div([
     html.Div([
         html.H3("Verschiebedauer-Verteilungen aller Geräte"),
         dcc.Graph(id="shift-all-graph")
+    ], className="mb-4"),
+
+    html.Div([
+        # Du kannst hier auch eine Überschrift für diese neue Grafik hinzufügen, wenn du möchtest
+        # html.H3("Detailansicht: Simulierte Lastverschiebung pro Gerät"),
+        per_appliance_comparison_graph_component() # Aufruf der Funktion, die dcc.Graph(id="per-appliance-comparison-graph") zurückgibt
     ], className="mb-4"),
 
 ])
