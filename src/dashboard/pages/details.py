@@ -12,7 +12,7 @@ from dashboard.components.details.graphs.cost2_graphs        import cost2_graph
 from dashboard.components.details.graphs.consumption_graphs import consumption_graph
 from dashboard.components.details.graphs.regulation_volume_graphs import regulation_volume_graph
 from dashboard.components.details.survey_graphs.participation_graphs import make_participation_curve
-from dashboard.components.details.survey_graphs.shift_duration_all import make_all_shift_distributions
+from dashboard.components.details.survey_graphs.shift_duration_all import calculate_shift_potential_data
 
 # Damit der Callback-Decorator aktiv wird
 import dashboard.components.details.callbacks  # noqa: F401

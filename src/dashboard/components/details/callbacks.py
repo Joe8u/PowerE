@@ -16,7 +16,7 @@ from dashboard.components.details.graphs.consumption_graphs import make_consumpt
 from dashboard.components.details.graphs.regulation_volume_graphs import make_regulation_volume_info
 
 from dashboard.components.details.survey_graphs.participation_graphs import make_participation_curve
-from dashboard.components.details.survey_graphs.shift_duration_all import make_all_shift_distributions
+from dashboard.components.details.survey_graphs.shift_duration_all import calculate_shift_potential_data
 
 
 @callback(
@@ -123,7 +123,10 @@ def update_graph(selected_values, cumulative_flag, start, end, selected_graphs):
 
     # 9) Teilnahme-Curve und Shift-Dauer
     fig_part = make_participation_curve()
-    fig_shift = make_all_shift_distributions()
+    shift_data_results = calculate_shift_potential_data()
+
+    fig_shift = shift_data_results["figure"]
+    shift_metrics = shift_data_results["metrics"]
 
     return (
         # 1–6: Figures & Cards
