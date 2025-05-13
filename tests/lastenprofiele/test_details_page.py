@@ -1,3 +1,5 @@
+#PowerE/tests/lastenprofiele/test_details_page.py
+
 import pytest
 from dash.testing.application_runners import import_app
 

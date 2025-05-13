@@ -1,39 +1,37 @@
-#!/usr/bin/env python3
 # src/dashboard/pages/scenarios.py
+from dash import register_page, html, dcc
+import dash_bootstrap_components as dbc
 
-from dash import register_page, html, dcc, callback, Input, Output
-import plotly.express as px
+from dashboard.components.scenarios.controls import make_scenario_controls # Korrekt
+# NEU: Passe diesen Import an, da die Grafik jetzt in scenarios/graphs liegt
+from dashboard.components.scenarios.graphs.per_appliance_comparison_graph import per_appliance_comparison_graph_component 
 
-# 1) Seite registrieren
-register_page(__name__, path="/scenarios", title="Scenarios")
+from data_loader.lastprofile import list_appliances # Korrekt
 
-# 2) Modul-level layout
-layout = html.Div([
-    html.H1("Szenarioanalyse"),
-    html.P("Interaktive Analyse von Lastverschiebungsszenarien."),
-    dcc.Graph(id="scenario-plot"),
-    dcc.Slider(
-        id="compensation-slider",
-        min=0,
-        max=50,
-        step=5,
-        value=10,
-        marks={i: f"{i}%" for i in range(0, 51, 10)},
-        tooltip={"placement": "bottom", "always_visible": True},
-    ),
-])
-
-# 3) Callback mit Pages-API
-@callback(
-    Output("scenario-plot", "figure"),
-    Input("compensation-slider", "value")
+register_page(
+    __name__,
+    path="/scenarios",
+    title="Szenario-Simulation | PowerE",
+    name="Szenario-Simulation"
 )
-def update_scenario_plot(compensation_value):
-    # Dummy-Plot als Platzhalter
-    fig = px.line(
-        x=[1, 2, 3],
-        y=[compensation_value, compensation_value * 2, compensation_value * 3],
-        labels={"x": "Szenario", "y": "Netto-Mehrwert"},
-        title=f"Netto-Mehrwert bei {compensation_value}% Rabatt"
-    )
-    return fig
+
+layout = dbc.Container(
+    [
+        html.H1("Lastverschiebung: Szenario-Simulation", className="my-4"),
+        html.Hr(),
+        html.Div(
+            id="scenario-controls-container",
+            children=[
+                make_scenario_controls(list_appliances(2024)) # Korrekt
+            ]
+        ),
+        html.Hr(className="my-4"),
+        html.Div(
+            id="scenario-results-container",
+            children=[
+                per_appliance_comparison_graph_component(), # Korrekt
+            ]
+        ),
+    ],
+    fluid=True
+)
