@@ -34,6 +34,40 @@ layout = dbc.Container(
                 per_appliance_comparison_graph_component(), # Korrekt
             ]
         ),
+
+        html.H4("Ökonomische Bewertung des Szenarios:", className="mb-3"),
+        dbc.Row(
+            [
+                dbc.Col(dbc.Card([dbc.CardHeader("Value Added (Netto)"), 
+                                dbc.CardBody(id="scenario-kpi-value-added", className="fs-4 fw-bold")]), 
+                        width=12, md=6, lg=3, className="mb-3"),
+                dbc.Col(dbc.Card([dbc.CardHeader("Spotmarkt-Einsparung"), 
+                                dbc.CardBody(id="scenario-kpi-spot-savings", className="fs-5")]), 
+                        width=12, md=6, lg=3, className="mb-3"),
+                dbc.Col(dbc.Card([dbc.CardHeader("Regelenergie-Einsparung"), 
+                                dbc.CardBody(id="scenario-kpi-as-savings", className="fs-5")]), 
+                        width=12, md=6, lg=3, className="mb-3"),
+                dbc.Col(dbc.Card([dbc.CardHeader("DR-Programmkosten (Anreize)"), 
+                                dbc.CardBody(id="scenario-kpi-dr-costs", className="fs-5")]), 
+                        width=12, md=6, lg=3, className="mb-3"),
+            ],
+            className="mb-2" # Weniger Abstand nach unten, wenn noch mehr KPIs kommen
+        ),
+        dbc.Row(
+            [
+                dbc.Col(dbc.Card([dbc.CardHeader("Verschobene Energie (Event)"),
+                                dbc.CardBody(id="scenario-kpi-total-shifted-energy", className="fs-5")]), 
+                        width=12, md=6, lg=3, className="mb-3"),
+                dbc.Col(dbc.Card([dbc.CardHeader("Avg. Anreizkostenrate"),
+                                dbc.CardBody(id="scenario-kpi-avg-payout-rate", className="fs-5")]), 
+                        width=12, md=6, lg=3, className="mb-3"),
+                # Hier wäre Platz für Baseline-Kosten vs. Szenario-Kosten, falls gewünscht
+            ],
+            className="mb-4"
+        ),
+
+
     ],
     fluid=True
+    
 )
