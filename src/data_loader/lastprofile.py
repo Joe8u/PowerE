@@ -9,13 +9,13 @@ BASE_DIR = Path("data/processed/lastprofile")
 
 # --- 0) Survey-Gruppen-Mapping (optional, nur wenn group=True) -------------
 group_map = {
-    "Geschirrspüler":                      ["Dishwasher"],
-    "Backofen und Herd":                   ["Cooking"],
-    "Fernseher und Entertainment-Systeme": ["TV", "STB", "DVB", "Music"],
-    "Bürogeräte":                          ["Computer"],
-    # Laundry: Waschmaschine + Tumble dryer
-    "Waschmaschine (Laundry)":             ["Washing machine", "Tumble dryer"],
-    # Staubsauger / Others kannst Du hier weglassen, wenn gewünscht
+    "Geschirrspüler":                      ["Geschirrspüler"],
+    "Backofen und Herd":                   ["Backofen und Herd"],
+    "Fernseher und Entertainment-Systeme": ["Fernseher und Entertainment-Systeme"],
+    "Bürogeräte":                          ["Bürogeräte"],
+    "Waschmaschine":                       ["Waschmaschine"] 
+    # Wenn eine Spalte in der CSV "Geschirrspüler" heißt und du die Gruppe "Geschirrspüler" willst,
+    # dann ist das Mapping "Geschirrspüler": ["Geschirrspüler"].
 }
 
 # 1) Meta-Info: Welche Appliances (oder Gruppen) gibt es?

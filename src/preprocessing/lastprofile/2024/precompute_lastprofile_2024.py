@@ -71,7 +71,7 @@ group_map = {
     "Backofen und Herd":                  ["Cooking"],
     "Fernseher und Entertainment-Systeme":["TV","STB","DVB","Music"],
     "Bürogeräte":                         ["Computer"],
-    "Waschmaschine (Laundry)":            ["Washing machine","Tumble dryer"],
+    "Waschmaschine":                      ["Washing machine"]
 }
 
 df_grouped = pd.DataFrame({"timestamp": df_merged["timestamp"]})
