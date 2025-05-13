@@ -8,5 +8,5 @@ def calculate_dr_incentive_costs(
         return 0.0
     total_costs = total_shifted_energy_kwh * average_incentive_cost_per_kwh
     print(f"[INFO] calculate_dr_incentive_costs: Verschobene Energie={total_shifted_energy_kwh:.2f} kWh, "
-          f"Anreiz/kWh={average_incentive_cost_per_kwh:.4f} CHF/kWh, Gesamte Anreizkosten={total_costs:.2f} CHF")
+          f"Anreiz/kWh={average_incentive_cost_per_kwh:.4f} EUR/kWh, Gesamte Anreizkosten={total_costs:.2f} EUR")
     return total_costs
