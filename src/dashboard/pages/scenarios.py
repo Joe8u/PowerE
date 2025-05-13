@@ -8,6 +8,8 @@ from dashboard.components.scenarios.graphs.per_appliance_comparison_graph import
 
 from data_loader.lastprofile import list_appliances # Korrekt
 
+import dashboard.components.scenarios.callbacks  # noqa: F401
+
 register_page(
     __name__,
     path="/scenarios",
