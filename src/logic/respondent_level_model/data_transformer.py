@@ -2,8 +2,8 @@
 import pandas as pd
 import numpy as np
 
-from data_loader.survey_loader.nonuse2_loader import load_q9_nonuse_long
-from data_loader.survey_loader.incentive2_loader import load_q10_incentives_long
+from src.data_loader.survey_loader.nonuse2_loader import load_q9_nonuse_long
+from src.data_loader.survey_loader.incentive2_loader import load_q10_incentives_long
 
 def create_respondent_flexibility_df() -> pd.DataFrame:
     print("[INFO] create_respondent_flexibility_df: Starte Transformation der Umfragedaten...")

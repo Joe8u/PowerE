@@ -1,3 +1,5 @@
+#In PowerE/src/logic/respondent_level_model/flexibility_analyzer.py
+
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -5,7 +7,7 @@ from datetime import datetime, timedelta
 # Stelle sicher, dass du deine Kernsimulationsfunktion importieren kannst
 # Der genaue Pfad hängt davon ab, wo simulate_respondent_level_load_shift jetzt genau liegt.
 # Basierend auf deinem Dump ist es in src/logic/load_shifting_simulation.py
-from logic.load_shifting_simulation import simulate_respondent_level_load_shift
+from src.logic.load_shifting_simulation import simulate_respondent_level_load_shift
 
 def get_flexibility_potential(
     appliance_name: str,
