@@ -1,227 +1,243 @@
-# PowerE/tests/logic/test_load_shifting_simulation.py
+# PowerE/tests/logic/test_scenario_analyzer.py
 
 import pytest
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from scipy.stats import lognorm
 
-# Importiere die zu testende Funktion
-# Annahme: Dein Projekt-Root ist im PYTHONPATH, wenn du pytest ausführst,
-# oder du hast src/ als Source-Root in deiner IDE konfiguriert.
-# Alternativ: from ...src.logic.load_shifting_simulation import run_load_shifting_simulation
-from logic.load_shifting_simulation import run_load_shifting_simulation
+# Importiere die zu testende Hauptfunktion
+from logic.scenario_analyzer import evaluate_dr_scenario
+
+# Dieser Import wird für die Struktur der Fixture sample_df_respondent_flexibility verwendet,
+# um sicherzustellen, dass die Testdaten der erwarteten Struktur entsprechen.
+# Es ist nicht zwingend notwendig, wenn die Struktur manuell korrekt erstellt wird,
+# aber es hilft, die Konsistenz mit dem data_transformer zu verdeutlichen.
+# from logic.respondent_level_model.data_transformer import create_respondent_flexibility_df 
 
 # --- Pytest Fixtures für Testdaten ---
 
 @pytest.fixture
-def sample_appliances() -> list:
+def simulation_appliances() -> list:
+    """Definiert die Geräte, die in der Simulation betrachtet werden."""
     return ["Waschmaschine", "Geschirrspüler"]
 
 @pytest.fixture
-def sample_timestamps() -> pd.DatetimeIndex:
-    # Erzeugt Zeitstempel für 2 Tage in 15-Minuten-Intervallen
-    return pd.date_range(start="2024-01-01 00:00:00", end="2024-01-02 23:45:00", freq="15min")
+def test_timestamps() -> pd.DatetimeIndex:
+    """Erzeugt Zeitstempel für einen kurzen Testzeitraum."""
+    return pd.date_range(start="2024-01-01 12:00:00", periods=16, freq="15min") # 4 Stunden
 
 @pytest.fixture
-def sample_df_load_profiles(sample_timestamps, sample_appliances) -> pd.DataFrame:
+def sample_df_average_load_profiles(test_timestamps, simulation_appliances) -> pd.DataFrame:
+    """Erzeugt Beispiel-Durchschnitts-Lastprofile für die zu simulierenden Geräte."""
     data = {}
-    # Waschmaschine läuft zwischen 10 und 11 Uhr mit 1 kW
-    data["Waschmaschine"] = pd.Series(0.0, index=sample_timestamps)
-    data["Waschmaschine"].loc[
-        (sample_timestamps >= pd.Timestamp("2024-01-01 10:00:00")) &
-        (sample_timestamps < pd.Timestamp("2024-01-01 11:00:00"))
-    ] = 1.0 # 1 kW
+    # Waschmaschine läuft 13:00-14:00 mit 1 kW
+    if "Waschmaschine" in simulation_appliances:
+        data["Waschmaschine"] = pd.Series(0.0, index=test_timestamps, dtype=float)
+        data["Waschmaschine"].loc[
+            (test_timestamps >= pd.Timestamp("2024-01-01 13:00:00")) &
+            (test_timestamps < pd.Timestamp("2024-01-01 14:00:00"))
+        ] = 1.0
 
-    # Geschirrspüler läuft zwischen 14 und 16 Uhr mit 0.8 kW
-    data["Geschirrspüler"] = pd.Series(0.0, index=sample_timestamps)
-    data["Geschirrspüler"].loc[
-        (sample_timestamps >= pd.Timestamp("2024-01-01 14:00:00")) &
-        (sample_timestamps < pd.Timestamp("2024-01-01 16:00:00"))
-    ] = 0.8 # 0.8 kW
+    # Geschirrspüler läuft 14:00-15:00 mit 0.8 kW
+    if "Geschirrspüler" in simulation_appliances:
+        data["Geschirrspüler"] = pd.Series(0.0, index=test_timestamps, dtype=float)
+        data["Geschirrspüler"].loc[
+            (test_timestamps >= pd.Timestamp("2024-01-01 14:00:00")) &
+            (test_timestamps < pd.Timestamp("2024-01-01 15:00:00"))
+        ] = 0.8
     
-    # Ein Gerät, das nicht in sample_appliances ist, um Vollständigkeit zu testen
-    data["Bürogeräte"] = pd.Series(0.1, index=sample_timestamps) # Läuft immer mit 0.1 kW
-
+    # Sicherstellen, dass alle in simulation_appliances definierten Spalten vorhanden sind,
+    # auch wenn oben keine spezifische Last definiert wurde (um KeyErrors zu vermeiden).
+    for app in simulation_appliances:
+        if app not in data:
+            data[app] = pd.Series(0.0, index=test_timestamps, dtype=float)
+            
     return pd.DataFrame(data)
 
 @pytest.fixture
-def sample_shift_metrics(sample_appliances) -> dict:
-    metrics = {}
-    # Für die Geräte, die wir aktiv testen wollen
-    # Waschmaschine: Gute Flexibilität
-    metrics["Waschmaschine"] = {
-        "participation_rate": 0.8, # Basis-Rate aus Q9 (wird hier nicht direkt verwendet, aber ist Teil der Struktur)
-        "lognorm_shape": 0.5,      # Beispielwerte für eine Log-Normal-Verteilung
-        "lognorm_loc": 0,
-        "lognorm_scale": np.exp(1.5), # E[D] ca. 5.7h, Median ca. 4.5h
-        "expected_duration_willing": 5.7,
-        "median_duration_willing": 4.5
-    }
-    # Geschirrspüler: Weniger flexibel in der Dauer
-    metrics["Geschirrspüler"] = {
-        "participation_rate": 0.9,
-        "lognorm_shape": 0.8,
-        "lognorm_loc": 0,
-        "lognorm_scale": np.exp(0.5), # E[D] ca. 2.0h, Median ca. 1.6h
-        "expected_duration_willing": 2.0,
-        "median_duration_willing": 1.6
-    }
-    # Bürogeräte: Keine Flexibilität in der Dauer angenommen
-    metrics["Bürogeräte"] = {
-        "participation_rate": 0.1,
-        "lognorm_shape": np.nan, # Keine positive Dauer angegeben
-        "lognorm_loc": 0,
-        "lognorm_scale": np.nan,
-        "expected_duration_willing": np.nan,
-        "median_duration_willing": np.nan
-    }
-    return metrics
-
-@pytest.fixture
-def sample_df_participation_curve_q10(sample_appliances) -> pd.DataFrame:
+def sample_df_respondent_flexibility(simulation_appliances) -> pd.DataFrame:
+    """
+    Erzeugt einen Beispiel-DataFrame für die Flexibilität der Befragten.
+    Struktur: 'respondent_id', 'device', 'max_duration_hours', 
+              'incentive_choice', 'incentive_pct_required'
+    """
     data = []
-    for dev in sample_appliances + ["Bürogeräte"]: # Füge alle Geräte hinzu, die in Lastprofilen vorkommen
-        # Einfache lineare Kurve: 0% Teilnahme bei 0% Anreiz, 100% Teilnahme bei 20% Anreiz
-        data.append({"device": dev, "comp_pct": 0, "participation_pct": 0})
-        data.append({"device": dev, "comp_pct": 10, "participation_pct": 50})
-        data.append({"device": dev, "comp_pct": 20, "participation_pct": 100})
+    # Respondent 1
+    if "Waschmaschine" in simulation_appliances:
+        data.append({
+            'respondent_id': "R1", 'device': "Waschmaschine", 
+            'max_duration_hours': 2.0, 'incentive_choice': "yes_conditional", 'incentive_pct_required': 10.0
+        })
+    if "Geschirrspüler" in simulation_appliances:
+        data.append({
+            'respondent_id': "R1", 'device': "Geschirrspüler", 
+            'max_duration_hours': 1.0, 'incentive_choice': "yes_fixed", 'incentive_pct_required': 0.0 
+        })
+
+    # Respondent 2
+    if "Waschmaschine" in simulation_appliances:
+        data.append({
+            'respondent_id': "R2", 'device': "Waschmaschine", 
+            'max_duration_hours': 0.5, 'incentive_choice': "yes_fixed", 'incentive_pct_required': 0.0
+        }) # Dauer zu kurz für ein 1h Event
+    if "Geschirrspüler" in simulation_appliances:
+        data.append({
+            'respondent_id': "R2", 'device': "Geschirrspüler", 
+            'max_duration_hours': 3.0, 'incentive_choice': "yes_conditional", 'incentive_pct_required': 20.0
+        }) # Benötigter Anreiz zu hoch für 15% Angebot
+
+    # Respondent 3 (stellt sicher, dass num_survey_base_for_dev > num_effective_shifters_dev sein kann)
+    if "Waschmaschine" in simulation_appliances:
+        data.append({
+            'respondent_id': "R3", 'device': "Waschmaschine", 
+            'max_duration_hours': 3.0, 'incentive_choice': "no", 'incentive_pct_required': np.nan
+        })
+        
+    if not data: 
+        # Fallback, um einen leeren DataFrame mit korrekten Spalten zurückzugeben, falls keine Geräte übereinstimmen
+        return pd.DataFrame(columns=['respondent_id', 'device', 'max_duration_hours', 'incentive_choice', 'incentive_pct_required'])
+        
     return pd.DataFrame(data)
+
 
 @pytest.fixture
 def sample_event_parameters() -> dict:
+    """Beispiel DR-Event Parameter."""
     return {
-        'start_time': pd.Timestamp("2024-01-01 14:00:00"),
-        'end_time': pd.Timestamp("2024-01-01 16:00:00"), # 2-Stunden-Event
-        'required_duration_hours': 2.0,
-        'incentive_percentage': 0.15 # 15% Anreiz
+        'start_time': pd.Timestamp("2024-01-01 13:30:00"),
+        'end_time': pd.Timestamp("2024-01-01 14:30:00"), # 1-Stunden-Event
+        'required_duration_hours': 1.0,
+        'incentive_percentage': 0.15 # 15% Anreizangebot (als 0-1 Wert)
     }
 
 @pytest.fixture
 def sample_simulation_assumptions() -> dict:
+    """Beispiel Simulationsannahmen."""
     return {
-        'reality_discount_factor': 1.0, # Kein Discount für einfachen Test
-        'payback_model': {'type': 'uniform_after_event', 'duration_hours': 2.0, 'delay_hours': 0.0}
+        'reality_discount_factor': 0.7, 
+        'payback_model': {'type': 'uniform_after_event', 'duration_hours': 1.0, 'delay_hours': 0.25}
+    }
+
+@pytest.fixture
+def sample_df_spot_prices_eur_mwh(test_timestamps) -> pd.Series:
+    """Beispiel Spotpreise."""
+    prices = pd.Series(50.0, index=test_timestamps, dtype=float)
+    prices.loc[
+        (test_timestamps >= pd.Timestamp("2024-01-01 13:00:00")) &
+        (test_timestamps < pd.Timestamp("2024-01-01 15:00:00"))
+    ] = 150.0 
+    return prices
+
+@pytest.fixture
+def sample_df_reg_original_data(test_timestamps) -> pd.DataFrame:
+    """Beispiel Regelenergiedaten."""
+    data = {
+        'total_called_mw': pd.Series(0.0, index=test_timestamps, dtype=float),
+        'avg_price_eur_mwh': pd.Series(0.0, index=test_timestamps, dtype=float)
+    }
+    mask = (test_timestamps >= pd.Timestamp("2024-01-01 13:30:00")) & \
+           (test_timestamps < pd.Timestamp("2024-01-01 14:30:00")) 
+    data['total_called_mw'].loc[mask] = 5.0 
+    data['avg_price_eur_mwh'].loc[mask] = 200.0
+    return pd.DataFrame(data)
+
+@pytest.fixture
+def sample_cost_model_assumptions() -> dict:
+    """Beispiel Kostenmodell-Annahmen."""
+    return {
+        'avg_household_electricity_price_eur_kwh': 0.276, 
+        'assumed_dr_events_per_month': 12,
+        'as_displacement_factor': 0.1 
     }
 
 # --- Testfunktionen ---
 
-def test_simulation_runs_and_returns_correct_structure(
-    sample_df_load_profiles,
-    sample_shift_metrics,
-    sample_df_participation_curve_q10,
+def test_evaluate_dr_scenario_runs_and_returns_structure(
+    sample_df_respondent_flexibility, 
+    sample_df_average_load_profiles,  
     sample_event_parameters,
-    sample_simulation_assumptions
+    sample_simulation_assumptions,
+    sample_df_spot_prices_eur_mwh,
+    sample_df_reg_original_data,
+    sample_cost_model_assumptions
 ):
     """
-    Testet, ob die Simulation ohne Fehler durchläuft und die erwartete Datenstruktur zurückgibt.
+    Testet, ob evaluate_dr_scenario ohne Fehler läuft und die erwartete Ausgabestruktur hat,
+    unter Verwendung des respondenten-basierten Simulationsmodells.
     """
-    result = run_load_shifting_simulation(
-        df_load_profiles=sample_df_load_profiles,
-        shift_metrics=sample_shift_metrics,
-        df_participation_curve_q10=sample_df_participation_curve_q10,
+    if sample_df_respondent_flexibility.empty and not sample_df_average_load_profiles.empty :
+        pytest.skip("Skipping test: sample_df_respondent_flexibility is empty but average loads are not.")
+        
+    results = evaluate_dr_scenario(
+        df_respondent_flexibility=sample_df_respondent_flexibility, 
+        df_average_load_profiles=sample_df_average_load_profiles,   
         event_parameters=sample_event_parameters,
-        simulation_assumptions=sample_simulation_assumptions
+        simulation_assumptions=sample_simulation_assumptions,
+        df_spot_prices_eur_mwh=sample_df_spot_prices_eur_mwh,
+        df_reg_original_data=sample_df_reg_original_data,
+        cost_model_assumptions=sample_cost_model_assumptions
     )
 
-    assert isinstance(result, dict), "Ergebnis sollte ein Dictionary sein."
-    assert "df_shiftable_per_appliance" in result, "Schlüssel 'df_shiftable_per_appliance' fehlt."
-    assert "df_payback_per_appliance" in result, "Schlüssel 'df_payback_per_appliance' fehlt."
-
-    df_shiftable = result["df_shiftable_per_appliance"]
-    df_payback = result["df_payback_per_appliance"]
-
-    assert isinstance(df_shiftable, pd.DataFrame), "df_shiftable_per_appliance sollte ein DataFrame sein."
-    assert isinstance(df_payback, pd.DataFrame), "df_payback_per_appliance sollte ein DataFrame sein."
-
-    # Prüfe, ob Index und Spalten mit den Eingangs-Lastprofilen übereinstimmen
-    pd.testing.assert_index_equal(df_shiftable.index, sample_df_load_profiles.index)
-    pd.testing.assert_index_equal(df_payback.index, sample_df_load_profiles.index)
+    assert isinstance(results, dict), "Ergebnis sollte ein Dictionary sein."
     
-    # Spalten sollten die Geräte aus den Eingangs-Lastprofilen sein
-    assert all(col in df_shiftable.columns for col in sample_df_load_profiles.columns)
-    assert all(col in df_payback.columns for col in sample_df_load_profiles.columns)
-    assert len(df_shiftable.columns) == len(sample_df_load_profiles.columns)
-    assert len(df_payback.columns) == len(sample_df_load_profiles.columns)
+    expected_keys = [
+        "value_added_eur", "baseline_spot_costs_eur", "scenario_spot_costs_eur",
+        "dr_program_costs_eur", "ancillary_service_savings_eur",
+        "original_aggregated_load_kw", "final_shifted_aggregated_load_kw",
+        "df_shiftable_per_appliance", "df_payback_per_appliance",
+        "total_shifted_energy_kwh_event", "shifted_energy_per_device_kwh_event",
+        "average_payout_rate_eur_per_kwh_event",
+        "detailed_participation_for_costing" 
+    ]
+    for key in expected_keys:
+        assert key in results, f"Erwarteter Schlüssel '{key}' fehlt im Ergebnis. Vorhandene Schlüssel: {list(results.keys())}"
+
+    assert isinstance(results["value_added_eur"], (float, np.floating))
+    assert isinstance(results["original_aggregated_load_kw"], pd.Series)
+    assert isinstance(results["df_shiftable_per_appliance"], pd.DataFrame)
+    assert isinstance(results["shifted_energy_per_device_kwh_event"], dict)
+    assert isinstance(results["detailed_participation_for_costing"], list)
+
+    if not sample_df_average_load_profiles.empty:
+        pd.testing.assert_index_equal(results["df_shiftable_per_appliance"].index, sample_df_average_load_profiles.index)
+        assert all(col in results["df_shiftable_per_appliance"].columns for col in sample_df_average_load_profiles.columns)
+        assert len(results["df_shiftable_per_appliance"].columns) == len(sample_df_average_load_profiles.columns)
+    elif "error" not in results: 
+        assert results["df_shiftable_per_appliance"].empty
 
 
-# HIER KÖNNEN WEITERE, SPEZIFISCHERE TESTS FOLGEN
-# z.B. test_no_shift_if_no_load, test_shift_values_for_specific_device, test_payback_timing_and_amount
-
-def test_specific_shift_and_payback_geschirrspueler(
-    sample_df_load_profiles, # Geschirrspüler läuft 14-16 Uhr mit 0.8 kW
-    sample_shift_metrics,    # Geschirrspüler: P(D>=2h) wird berechnet, Median 1.6h, E[D] 2.0h
-    sample_df_participation_curve_q10, # Bei 15% Anreiz -> 75% Teilnahme
-    sample_event_parameters, # Event 14-16 Uhr, Dauer 2h, Anreiz 15%
-    sample_simulation_assumptions # Kein Discount, Payback 16-18 Uhr
+def test_evaluate_dr_scenario_empty_load_profiles(
+    sample_df_respondent_flexibility, 
+    sample_event_parameters,
+    sample_simulation_assumptions,
+    sample_df_spot_prices_eur_mwh,
+    sample_df_reg_original_data,
+    sample_cost_model_assumptions
 ):
-    """ Testet die konkreten Werte für ein Gerät."""
-    result = run_load_shifting_simulation(
-        df_load_profiles=sample_df_load_profiles,
-        shift_metrics=sample_shift_metrics,
-        df_participation_curve_q10=sample_df_participation_curve_q10,
+    """Testet das Verhalten von evaluate_dr_scenario, wenn leere Lastprofile übergeben werden."""
+    empty_average_load_profiles = pd.DataFrame()
+    
+    results = evaluate_dr_scenario(
+        df_respondent_flexibility=sample_df_respondent_flexibility,
+        df_average_load_profiles=empty_average_load_profiles,
         event_parameters=sample_event_parameters,
-        simulation_assumptions=sample_simulation_assumptions
+        simulation_assumptions=sample_simulation_assumptions,
+        df_spot_prices_eur_mwh=sample_df_spot_prices_eur_mwh,
+        df_reg_original_data=sample_df_reg_original_data,
+        cost_model_assumptions=sample_cost_model_assumptions
     )
     
-    df_shiftable = result["df_shiftable_per_appliance"]
-    df_payback = result["df_payback_per_appliance"]
-
-    # --- Für Geschirrspüler ---
-    dev = "Geschirrspüler"
-    
-    # p_participate_incentive (Q10): 15% Anreiz -> 75% Teilnahme (0.75)
-    # (weil 10% -> 50%, 20% -> 100%, linear interpoliert für 15% ist (50+100)/2 = 75%)
-    expected_p_incentive = 0.75 
-    
-    # p_duration_ok (Q9): P(D_max >= 2h) für Geschirrspüler
-    # shape=0.8, scale=np.exp(0.5) approx 1.6487
-    # 1 - lognorm.cdf(2, s=0.8, loc=0, scale=np.exp(0.5))
-    # Dieses Ergebnis können wir extern berechnen und hier einsetzen
-    # lognorm.cdf(2, s=0.8, loc=0, scale=np.exp(0.5)) = 0.6456...
-    # p_duration_ok = 1 - 0.6456 = 0.3544
-    expected_p_duration_ok = 1 - lognorm.cdf(2, s=0.8, loc=0, scale=np.exp(0.5))
-    
-    expected_p_effective = expected_p_incentive * expected_p_duration_ok # * reality_discount (hier 1.0)
-    # expected_p_effective = 0.75 * 0.3544 = 0.2658
-    
-    # Erwartete Reduktion: 0.8 kW * 0.2658 = 0.21264 kW
-    expected_reduction_kw = 0.8 * expected_p_effective
-
-    event_start = sample_event_parameters['start_time']
-    event_end = sample_event_parameters['end_time']
-    
-    # Überprüfe Reduktion während des Events
-    reduction_during_event = df_shiftable[dev].loc[event_start:event_end - pd.Timedelta(minutes=1)] # Exklusive Endzeit
-    assert np.allclose(reduction_during_event, expected_reduction_kw), \
-        f"Unerwartete Reduktion für {dev}. Erwartet: {expected_reduction_kw}, Bekommen: {reduction_during_event.unique()}"
-    
-    # Überprüfe, ob außerhalb des Events (vorher) keine Reduktion stattfindet
-    assert df_shiftable[dev].loc[:event_start - pd.Timedelta(minutes=1)].sum() == 0.0
-    # Überprüfe, ob außerhalb des Events (nachher) keine Reduktion stattfindet
-    assert df_shiftable[dev].loc[event_end:].sum() == 0.0
-
-
-    # Überprüfe Payback
-    # dt_h = 0.25 Stunden (15 Minuten)
-    # shifted_energy_kwh_dev = expected_reduction_kw * 2 Stunden (Dauer des Events)
-    # (Annahme: Reduktion ist konstant über die 2h)
-    # Korrekter: summe der df_shiftable[dev] während des Events * dt_h
-    dt_h = 0.25 
-    shifted_energy_kwh_dev = df_shiftable[dev].loc[event_start:event_end - pd.Timedelta(minutes=1)].sum() * dt_h
-    
-    payback_duration_hours = sample_simulation_assumptions['payback_model']['duration_hours']
-    expected_payback_power_kw = shifted_energy_kwh_dev / payback_duration_hours
-    
-    payback_start = event_end + pd.Timedelta(hours=sample_simulation_assumptions['payback_model']['delay_hours'])
-    payback_end = payback_start + pd.Timedelta(hours=payback_duration_hours)
-    
-    payback_during_window = df_payback[dev].loc[payback_start : payback_end - pd.Timedelta(minutes=1)]
-    
-    assert np.allclose(payback_during_window, expected_payback_power_kw), \
-         f"Unerwarteter Payback für {dev}. Erwartet: {expected_payback_power_kw}, Bekommen: {payback_during_window.unique()}"
-
-    # Überprüfe, ob außerhalb des Payback-Fensters kein Payback stattfindet
-    assert df_payback[dev].loc[:payback_start - pd.Timedelta(minutes=1)].sum() == 0.0
-    if payback_end < df_payback[dev].index.max(): # Nur prüfen, wenn Payback-Ende nicht am Ende des gesamten Zeitraums liegt
-         assert df_payback[dev].loc[payback_end:].sum() == 0.0
+    # Gemäß der Logik in evaluate_dr_scenario bei leeren df_average_load_profiles
+    assert results["value_added_eur"] == 0.0
+    assert results["baseline_spot_costs_eur"] == 0.0
+    assert results["scenario_spot_costs_eur"] == 0.0
+    assert results["dr_program_costs_eur"] == 0.0
+    assert results["ancillary_service_savings_eur"] == 0.0
+    assert results["original_aggregated_load_kw"].empty
+    assert results["final_shifted_aggregated_load_kw"].empty
+    assert results["df_shiftable_per_appliance"].empty
+    assert results["df_payback_per_appliance"].empty
+    assert results["total_shifted_energy_kwh_event"] == 0.0
+    assert not results["shifted_energy_per_device_kwh_event"] 
+    assert results["average_payout_rate_eur_per_kwh_event"] == 0.0
+    assert not results["detailed_participation_for_costing"]

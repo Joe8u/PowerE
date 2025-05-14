@@ -6,6 +6,7 @@ from dashboard.components.scenarios.controls import make_scenario_controls # Kor
 # NEU: Passe diesen Import an, da die Grafik jetzt in scenarios/graphs liegt
 from dashboard.components.scenarios.graphs.per_appliance_comparison_graph import per_appliance_comparison_graph_component 
 
+
 from data_loader.lastprofile import list_appliances # Korrekt
 
 import dashboard.components.scenarios.callbacks  # noqa: F401
@@ -65,6 +66,7 @@ layout = dbc.Container(
             ],
             className="mb-4"
         ),
+
 
 
     ],
