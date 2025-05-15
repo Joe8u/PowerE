@@ -1,54 +1,51 @@
-# src/preprocessing/survey/socioeconomics.py
-
-import os
+# PowerE/src/data_loader/survey_loader/socioeconomics.py
 import pandas as pd
+from pathlib import Path
+import numpy as np
 
-# Directory where all the processed survey CSVs live
-BASE_DIR = os.path.abspath(
-    os.path.join(__file__, os.pardir, os.pardir, os.pardir, 'data', 'processed', 'survey')
-)
+# KEINE Modul-level Definition von PROJECT_ROOT oder PROCESSED_DIR hier!
 
-# Logical → filename map for Q13–Q15
 _FILES = {
-    'income':     'question_13_income.csv',     # Q13: Haushaltseinkommen
-    'education':  'question_14_education.csv',  # Q14: Bildungsabschluss
-    'party_pref': 'question_15_party.csv',      # Q15: Parteien-Präferenz
+    'income':     'question_13_income.csv',
+    'education':  'question_14_education.csv',
+    'party_pref': 'question_15_party.csv',
 }
 
-def _load_csv(key: str) -> pd.DataFrame:
-    """
-    Load a single CSV by its logical key.
-    Raises KeyError if key unknown or FileNotFoundError if missing.
-    """
+def _load_csv_socio(key: str, fname: str, project_root_path: Path) -> pd.DataFrame:
+    PROCESSED_DIR = project_root_path / "data" / "processed" / "survey"
+    path = PROCESSED_DIR / fname
+    df = pd.DataFrame()
+    if not path.is_file():
+        print(f"WARNUNG [socioeconomics.py]: Datei nicht gefunden: {path}. DF für '{key}' wird leer sein.")
+        return df
     try:
-        fname = _FILES[key]
-    except KeyError:
-        raise KeyError(f"No such socio-economic component: {key!r}")
-    path = os.path.join(BASE_DIR, fname)
-    if not os.path.isfile(path):
-        raise FileNotFoundError(f"Could not find processed CSV at: {path}")
-    return pd.read_csv(path, dtype=str)
+        df = pd.read_csv(path, dtype=str)
+        if not df.empty and 'respondent_id' in df.columns:
+            df['respondent_id'] = df['respondent_id'].str.replace(r'\.0$', '', regex=True)
+            df['respondent_id'] = df['respondent_id'].replace(r'^\s*$', np.nan, regex=True).replace('nan', np.nan)
+            df.dropna(subset=['respondent_id'], inplace=True)
+        elif not df.empty:
+            print(f"WARNUNG [socioeconomics.py]: Spalte 'respondent_id' nicht in {fname}.")
+    except Exception as e:
+        print(f"FEHLER [socioeconomics.py] beim Lesen/Bereinigen von {path}: {e}")
+    return df
 
-def load_socioeconomics() -> dict[str, pd.DataFrame]:
-    """
-    Load all socio-economic survey tables (Q13–Q15).
+def load_socioeconomics(project_root_path: Path) -> dict[str, pd.DataFrame]:
+    return { key: _load_csv_socio(key, fname, project_root_path) for key, fname in _FILES.items() }
 
-    Returns
-    -------
-    dict
-        Keys are ['income', 'education', 'party_pref'] mapping to DataFrames.
-    """
-    return { key: _load_csv(key) for key in _FILES }
+# Convenience Loader müssen jetzt auch project_root_path annehmen
+def load_income(project_root_path: Path) -> pd.DataFrame:
+    return _load_csv_socio('income', _FILES['income'], project_root_path)
+def load_education(project_root_path: Path) -> pd.DataFrame:
+    return _load_csv_socio('education', _FILES['education'], project_root_path)
+def load_party_pref(project_root_path: Path) -> pd.DataFrame:
+    return _load_csv_socio('party_pref', _FILES['party_pref'], project_root_path)
 
-# Convenience loaders:
-def load_income() -> pd.DataFrame:
-    """Q13: Haushalts-Nettoeinkommen"""
-    return _load_csv('income')
-
-def load_education() -> pd.DataFrame:
-    """Q14: Höchster Bildungsabschluss"""
-    return _load_csv('education')
-
-def load_party_pref() -> pd.DataFrame:
-    """Q15: Partei-Präferenz"""
-    return _load_csv('party_pref')
+if __name__ == "__main__":
+    try:
+        test_project_root = Path(__file__).resolve().parent.parent.parent.parent
+        print(f"Socioeconomics Loader Direktaufruf - Test PROJECT_ROOT: {test_project_root}")
+        data = load_socioeconomics(test_project_root)
+        print("\nSocioeconomics-Daten (direkt aus socioeconomics.py geladen):")
+        for k, v_df in data.items(): print(f"  {k}: {v_df.shape}")
+    except Exception as e: print(f"Fehler im socioeconomics.py __main__: {e}")

@@ -1,23 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-survey_loader/demographics.py
-
-Demographics loader for the PowerE survey.
-
-Enthält Funktionen, um die vorverarbeiteten CSVs zu Q1–Q5
-(Age, Gender, Household Size, Accommodation, Electricity) zu laden.
-"""
-
-import os
+# PowerE/src/data_loader/survey_loader/demographics.py
 import pandas as pd
+from pathlib import Path
+import numpy as np
 
-# === Pfad-Setup ===
-# Wir gehen drei Ebenen nach oben bis zum Projekt-Root,
-# dort liegen die Ordner data/processed/survey
-BASE_DIR      = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir, os.pardir))
-PROCESSED_DIR = os.path.join(BASE_DIR, 'data', 'processed', 'survey')
+# KEINE Modul-level Definition von PROJECT_ROOT oder PROCESSED_DIR hier!
 
-# Mapping aus logischem Key → Dateiname
 FILES = {
     'age':            'question_1_age.csv',
     'gender':         'question_2_gender.csv',
@@ -26,30 +13,38 @@ FILES = {
     'electricity':    'question_5_electricity.csv',
 }
 
-def load_demographics() -> dict[str, pd.DataFrame]:
-    """
-    Lädt alle Demographie-DataFrames (Q1–Q5) und gibt sie als Dict zurück.
-    
-    Returns:
-        dict[str, pd.DataFrame]: Ein Dict mit Keys 'age', 'gender', 'household_size',
-                                 'accommodation', 'electricity' und den zugehörigen DataFrames.
-    """
+def load_demographics(project_root_path: Path) -> dict[str, pd.DataFrame]: # Akzeptiert Argument
+    PROCESSED_DIR = project_root_path / "data" / "processed" / "survey"
     dfs: dict[str, pd.DataFrame] = {}
     for key, fname in FILES.items():
-        path = os.path.join(PROCESSED_DIR, fname)
-        if not os.path.isfile(path):
-            raise FileNotFoundError(f"Processed file not found: {path}")
-        # Alle Spalten als String einlesen, damit die respondent_id unverändert bleibt
-        dfs[key] = pd.read_csv(path, dtype=str)
+        path = PROCESSED_DIR / fname
+        current_df = pd.DataFrame()
+        if not path.is_file():
+            print(f"WARNUNG [demographics.py]: Datei nicht gefunden: {path}. DataFrame für '{key}' wird leer sein.")
+            dfs[key] = current_df
+            continue
+        try:
+            rows_to_skip = [1] if key == 'age' and fname == 'question_1_age.csv' else None
+            current_df = pd.read_csv(path, dtype=str, skiprows=rows_to_skip)
+            if not current_df.empty and 'respondent_id' in current_df.columns:
+                current_df['respondent_id'] = current_df['respondent_id'].str.replace(r'\.0$', '', regex=True)
+                current_df['respondent_id'] = current_df['respondent_id'].replace(r'^\s*$', np.nan, regex=True).replace('nan', np.nan)
+                current_df.dropna(subset=['respondent_id'], inplace=True)
+                if key == 'age' and 'age' in current_df.columns:
+                    current_df['age'] = pd.to_numeric(current_df['age'], errors='coerce')
+            elif not current_df.empty:
+                 print(f"WARNUNG [demographics.py]: Spalte 'respondent_id' nicht in {fname} gefunden.")
+        except Exception as e:
+            print(f"FEHLER [demographics.py] beim Lesen/Bereinigen von {path}: {e}")
+        dfs[key] = current_df
     return dfs
 
 if __name__ == "__main__":
-    # Schnelltest: lade alle Demographie-Tabellen und gib ihre Shapes aus
+    # Zum direkten Testen dieses Moduls (Pfad muss hier explizit bestimmt werden)
     try:
-        data = load_demographics()
-    except Exception as e:
-        print(f"Fehler beim Laden der Demographie-Daten: {e}")
-        exit(1)
-    print("Erfolgreich alle Demographie-Daten geladen:")
-    for key, df in data.items():
-        print(f"  - {key:15s}: {df.shape[0]:5d} Zeilen × {df.shape[1]:2d} Spalten")
+        test_project_root = Path(__file__).resolve().parent.parent.parent.parent
+        print(f"Demographics Loader Direktaufruf - Test PROJECT_ROOT: {test_project_root}")
+        data = load_demographics(test_project_root)
+        print("\nDemographie-Daten (direkt aus demographics.py geladen):")
+        for k, v_df in data.items(): print(f"  {k}: {v_df.shape}")
+    except Exception as e: print(f"Fehler im demographics.py __main__: {e}")

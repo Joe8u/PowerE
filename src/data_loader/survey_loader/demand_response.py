@@ -1,66 +1,67 @@
-# demand_response.py
-
-import os
+# PowerE/src/data_loader/survey_loader/demand_response.py
 import pandas as pd
+import numpy as np
+from pathlib import Path
 
-# Directory where all the processed survey CSVs live
-BASE_DIR = os.path.abspath(
-    os.path.join(
-        __file__,
-        os.pardir,  # survey_loader
-        os.pardir,  # data_loader
-        os.pardir,  # src
-        os.pardir,  # PowerE (Projekt-Root)
-        'data', 'processed', 'survey'
-    )
-)
+# KEINE Modul-level Definition von PROJECT_ROOT oder BASE_DIR hier!
     
-# Mapping of logical names to filenames
 _FILES = {
-    'importance':  'question_8_importance_wide.csv',   # Q8: Importance of appliances (wide format)
-    'curtailment': 'question_9_curtailment.csv',       # Q9: Willingness to curtail use
-    'incentives':  'question_10_incentives.csv',       # Q10: Incentive dropdowns + rebate %
-    'notification': 'question_11_notification.csv',    # Q11: Notify when grid is stressed
-    'smart_plug':   'question_12_smart_plug.csv',      # Q12: Smart-plug install willingness
+    'importance':   'question_8_importance_wide.csv',
+    # 'curtailment' und 'incentives' hier ggf. nicht relevant für F1-Master-DF, wenn Q9/Q10 aus data_transformer kommen
+    'notification': 'question_11_notification.csv',
+    'smart_plug':   'question_12_smartplug.csv',
 }
 
-def _load_csv(name: str) -> pd.DataFrame:
-    """
-    Helper to load a single CSV by its logical name.
-    Raises FileNotFoundError if the file does not exist.
-    """
+def _load_csv_dr(name: str, project_root_path: Path) -> pd.DataFrame: # Akzeptiert project_root_path
+    PROCESSED_DIR = project_root_path / "data" / "processed" / "survey"
     fname = _FILES.get(name)
     if fname is None:
-        raise KeyError(f"No such survey component: {name}")
-    path = os.path.join(BASE_DIR, fname)
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"Processed file not found: {path}")
-    return pd.read_csv(path, dtype=str)
+        raise KeyError(f"No such survey component in _FILES for demand_response: {name}")
+    
+    path = PROCESSED_DIR / fname
+    df = pd.DataFrame()
+    if not path.is_file():
+        print(f"WARNUNG [demand_response.py]: Datei nicht gefunden: {path}. DF für '{name}' wird leer sein.")
+        return df
 
-def load_demand_response() -> dict[str, pd.DataFrame]:
-    """
-    Load all demand-response survey tables (Q8–Q12).
+    try:
+        rows_to_skip = [1] if name == 'smart_plug' else None # Nur für smart_plug die 2. Zeile skippen
+        df = pd.read_csv(path, dtype=str, skiprows=rows_to_skip)
+        if not df.empty and 'respondent_id' in df.columns:
+            df['respondent_id'] = df['respondent_id'].str.replace(r'\.0$', '', regex=True)
+            df['respondent_id'] = df['respondent_id'].replace(r'^\s*$', np.nan, regex=True).replace('nan', np.nan)
+            df.dropna(subset=['respondent_id'], inplace=True)
+        elif not df.empty:
+            print(f"WARNUNG [demand_response.py]: Spalte 'respondent_id' nicht in {fname}.")
+    except Exception as e:
+        print(f"FEHLER [demand_response.py] beim Lesen/Bereinigen von {path}: {e}")
+    return df
 
-    Returns
-    -------
-    dict[str, DataFrame]
-        A dict with keys ['importance', 'curtailment', 'incentives',
-        'notification', 'smart_plug'] mapping to the corresponding DataFrame.
-    """
-    return { name: _load_csv(name) for name in _FILES }
+def load_demand_response(project_root_path: Path) -> dict[str, pd.DataFrame]: # Akzeptiert Argument
+    # Lädt nur die für F1 relevanten Teile, die nicht schon durch data_transformer kommen
+    keys_to_load = ['importance', 'notification', 'smart_plug']
+    return { name: _load_csv_dr(name, project_root_path) for name in keys_to_load }
 
-# Optional convenience functions:
-def load_importance() -> pd.DataFrame:
-    return _load_csv('importance')
+def load_importance(project_root_path: Path) -> pd.DataFrame: # Akzeptiert Argument
+    return _load_csv_dr('importance', project_root_path)
+def load_notification(project_root_path: Path) -> pd.DataFrame: # Akzeptiert Argument
+    return _load_csv_dr('notification', project_root_path)
+def load_smart_plug(project_root_path: Path) -> pd.DataFrame: # Akzeptiert Argument
+    return _load_csv_dr('smart_plug', project_root_path)
 
-def load_curtailment() -> pd.DataFrame:
-    return _load_csv('curtailment')
+if __name__ == "__main__":
+    try:
+        test_project_root = Path(__file__).resolve().parent.parent.parent.parent
+        print(f"Demand Response Loader Direktaufruf - Test PROJECT_ROOT: {test_project_root}")
 
-def load_incentives() -> pd.DataFrame:
-    return _load_csv('incentives')
-
-def load_notification() -> pd.DataFrame:
-    return _load_csv('notification')
-
-def load_smart_plug() -> pd.DataFrame:
-    return _load_csv('smart_plug')
+        print("\nTeste explizit load_smart_plug...")
+        # Temporär den Pfad direkt in _load_csv_dr ausgeben für 'smart_plug'
+        # In _load_csv_dr: print(f"DEBUG: Trying to load {path}")
+        df_sp = load_smart_plug(test_project_root) # Rufe die Funktion mit dem Pfad auf
+        print(f"--- Smart Plug (Q12) --- Shape: {df_sp.shape}")
+        if not df_sp.empty:
+            print(df_sp.head())
+        else:
+            print("Q12 DataFrame ist leer nach dem Laden.")
+    except Exception as e_main:
+        print(f"Fehler im demand_response.py __main__: {e_main}")
