@@ -1,4 +1,4 @@
-# PowerE/src/analysis/data_check/analyze_all_suvey.py
+# PowerE/src/analysis/data_check/analyze_suvey.py
 """
 Generelles Skript zur Datenqualitätsprüfung für vorverarbeitete Umfragedaten.
 

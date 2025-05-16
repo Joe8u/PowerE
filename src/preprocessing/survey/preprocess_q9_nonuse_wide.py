@@ -26,7 +26,7 @@ OUT_PATH = os.path.join(OUT_DIR, OUT_FILENAME)
 
 def preprocess_q9_nonuse_wide(raw_csv: str, out_csv: str):
     # 1) Einlesen mit flachem Header (Zeile 0)
-    df = pd.read_csv(raw_csv, header=0, dtype=str)
+    df = pd.read_csv(raw_csv, header=0, skiprows=[1], dtype=str)
 
     # 2) Exakter Fragetext
     question = (

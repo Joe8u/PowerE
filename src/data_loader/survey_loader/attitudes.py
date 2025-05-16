@@ -3,14 +3,12 @@ import pandas as pd
 from pathlib import Path
 import numpy as np
 
-# KEINE Modul-level Definition von PROJECT_ROOT oder PROCESSED_DIR hier!
-
 FILES = {
     'challenges': 'question_6_challenges.csv',
     'consequence': 'question_7_consequence.csv',
 }
 
-def load_attitudes(project_root_path: Path) -> dict[str, pd.DataFrame]: # Akzeptiert Argument
+def load_attitudes(project_root_path: Path) -> dict[str, pd.DataFrame]:
     PROCESSED_DIR = project_root_path / "data" / "processed" / "survey"
     dfs: dict[str, pd.DataFrame] = {}
     for key, fname in FILES.items():
@@ -21,10 +19,14 @@ def load_attitudes(project_root_path: Path) -> dict[str, pd.DataFrame]: # Akzept
             dfs[key] = current_df
             continue
         try:
-            current_df = pd.read_csv(path, dtype=str)
+            # Liest die (jetzt saubere) vorverarbeitete CSV-Datei
+            current_df = pd.read_csv(path, dtype=str, encoding='utf-8') # encoding hinzugefügt für Konsistenz
             if not current_df.empty and 'respondent_id' in current_df.columns:
+                # Diese Bereinigungen für respondent_id sind weiterhin sinnvoll
                 current_df['respondent_id'] = current_df['respondent_id'].str.replace(r'\.0$', '', regex=True)
                 current_df['respondent_id'] = current_df['respondent_id'].replace(r'^\s*$', np.nan, regex=True).replace('nan', np.nan)
+                # Diese Zeile wird jetzt keine Artefakt-Zeile mehr entfernen,
+                # aber immer noch Zeilen mit wirklich fehlender respondent_id (was gut ist).
                 current_df.dropna(subset=['respondent_id'], inplace=True)
             elif not current_df.empty:
                  print(f"WARNUNG [attitudes.py]: Spalte 'respondent_id' nicht in {fname} gefunden.")

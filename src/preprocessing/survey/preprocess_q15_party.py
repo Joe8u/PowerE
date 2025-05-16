@@ -30,7 +30,7 @@ OUT_PATH = os.path.join(OUT_DIR, OUT_FILENAME)
 def preprocess_q15_party(raw_csv: str, out_csv: str):
     # 1) Rohdaten einlesen
     try:
-        df = pd.read_csv(raw_csv, header=0, dtype=str)
+        df = pd.read_csv(raw_csv, header=0, skiprows=[1], dtype=str)
     except FileNotFoundError:
         print(f"Datei nicht gefunden: {raw_csv}", file=sys.stderr)
         sys.exit(1)

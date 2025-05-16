@@ -29,7 +29,7 @@ OUT_CSV_PATH    = os.path.join(PROCESSED_DIR, OUTPUT_FILENAME)
 def main(raw_csv_path: str, out_csv_path: str):
     # 1) Rohdaten einlesen (alle Spalten als String)
     try:
-        df = pd.read_csv(raw_csv_path, dtype=str)
+        df = pd.read_csv(raw_csv_path, header=0, skiprows=[1], dtype=str)
     except FileNotFoundError:
         print(f"Datei nicht gefunden: {raw_csv_path}", file=sys.stderr)
         sys.exit(1)

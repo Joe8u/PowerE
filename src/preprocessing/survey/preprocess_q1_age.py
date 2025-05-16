@@ -3,18 +3,13 @@
 Script to preprocess Question 1 (Age) from the Survey Monkey raw data.
 
 This script reads the raw CSV export, extracts respondent IDs and their age responses,
+specifically recodes 'unter 18' to 17 and 'über 95' to 96,
+then converts age to a numeric type (other non-numeric entries become NaN),
 and writes the result to a separate processed CSV file for Question 1.
-
-Input:
-    PowerE/data/raw/survey/Energieverbrauch und Teilnahmebereitschaft an Demand-Response-Programmen in Haushalten.csv
-Output:
-    PowerE/data/processed/survey/question_1_age.csv
-
-Usage:
-    python preprocess_q1_age.py
 """
 import os
 import pandas as pd
+import numpy as np # Für np.nan, falls explizit benötigt
 
 # Define file paths
 RAW_DIR = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir, 'data', 'raw', 'survey')
@@ -27,19 +22,30 @@ os.makedirs(PROCESSED_DIR, exist_ok=True)
 
 # Load the raw data
 raw_path = os.path.join(RAW_DIR, RAW_FILENAME)
-# KORRIGIERTER AUFRUF:
 df_raw = pd.read_csv(raw_path, encoding='utf-8', sep=',', header=0, skiprows=[1])
 
 # Extract respondent_id and the age column
-# Note: adjust the column name if it differs
-AGE_COL = 'Wie alt sind Sie?'
-if AGE_COL not in df_raw.columns:
-    raise KeyError(f"Expected column '{AGE_COL}' not found in raw data.")
+AGE_COL_ORIGINAL = 'Wie alt sind Sie?' # Name der Spalte in der Rohdatei
+if AGE_COL_ORIGINAL not in df_raw.columns:
+    raise KeyError(f"Expected column '{AGE_COL_ORIGINAL}' not found in raw data.")
 
-df_q1 = df_raw[['respondent_id', AGE_COL]].copy()
+df_q1 = df_raw[['respondent_id', AGE_COL_ORIGINAL]].copy()
 
-# Rename columns for clarity
-df_q1.columns = ['respondent_id', 'age']
+# Umbenennen der Spalte VOR der Konvertierung, um Klarheit zu schaffen
+df_q1.rename(columns={AGE_COL_ORIGINAL: 'age'}, inplace=True)
+
+# Spezifische textuelle Altersangaben vor der numerischen Konvertierung ersetzen
+# Wichtig: .astype(str) um sicherzustellen, dass .replace auf Strings operiert, falls die Spalte gemischte Typen hat
+df_q1['age'] = df_q1['age'].astype(str).str.lower().str.strip() # Normalisieren zu Kleinbuchstaben und Leerzeichen entfernen
+df_q1['age'] = df_q1['age'].replace('unter 18', '17')
+df_q1['age'] = df_q1['age'].replace('über 95', '96')
+# Du könntest hier weitere spezifische Ersetzungen hinzufügen, falls nötig
+
+# Konvertiere die 'age'-Spalte zu numerisch.
+# Andere Texte, die nicht explizit ersetzt wurden, werden zu NaN.
+df_q1['age'] = pd.to_numeric(df_q1['age'], errors='coerce')
+
+# Die Spaltennamen sind jetzt 'respondent_id' und 'age'
 
 # Save the processed data
 output_path = os.path.join(PROCESSED_DIR, OUTPUT_FILENAME)

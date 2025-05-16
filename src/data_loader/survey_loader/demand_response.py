@@ -25,11 +25,15 @@ def _load_csv_dr(name: str, project_root_path: Path) -> pd.DataFrame: # Akzeptie
         return df
 
     try:
-        rows_to_skip = [1] if name == 'smart_plug' else None # Nur für smart_plug die 2. Zeile skippen
-        df = pd.read_csv(path, dtype=str, skiprows=rows_to_skip)
+        # KORRIGIERTER TEIL: Die rows_to_skip Logik wurde entfernt.
+        # Wir fügen encoding='utf-8' für Konsistenz hinzu.
+        df = pd.read_csv(path, dtype=str, encoding='utf-8') # skiprows=rows_to_skip entfernt
+
         if not df.empty and 'respondent_id' in df.columns:
             df['respondent_id'] = df['respondent_id'].str.replace(r'\.0$', '', regex=True)
             df['respondent_id'] = df['respondent_id'].replace(r'^\s*$', np.nan, regex=True).replace('nan', np.nan)
+            # Diese dropna-Zeile ist weiterhin in Ordnung. Sie entfernt jetzt keine Artefakt-Zeile mehr,
+            # aber würde eine Zeile entfernen, falls ein echter Teilnehmer eine fehlende respondent_id hätte.
             df.dropna(subset=['respondent_id'], inplace=True)
         elif not df.empty:
             print(f"WARNUNG [demand_response.py]: Spalte 'respondent_id' nicht in {fname}.")

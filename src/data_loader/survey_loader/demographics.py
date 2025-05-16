@@ -3,8 +3,6 @@ import pandas as pd
 from pathlib import Path
 import numpy as np
 
-# KEINE Modul-level Definition von PROJECT_ROOT oder PROCESSED_DIR hier!
-
 FILES = {
     'age':            'question_1_age.csv',
     'gender':         'question_2_gender.csv',
@@ -24,14 +22,24 @@ def load_demographics(project_root_path: Path) -> dict[str, pd.DataFrame]: # Akz
             dfs[key] = current_df
             continue
         try:
-            rows_to_skip = [1] if key == 'age' and fname == 'question_1_age.csv' else None
-            current_df = pd.read_csv(path, dtype=str, skiprows=rows_to_skip)
+            # KORRIGIERTER TEIL: Die rows_to_skip Logik wurde entfernt.
+            # Füge encoding='utf-8' für Konsistenz hinzu.
+            current_df = pd.read_csv(path, dtype=str, encoding='utf-8') # skiprows=rows_to_skip entfernt
+
             if not current_df.empty and 'respondent_id' in current_df.columns:
                 current_df['respondent_id'] = current_df['respondent_id'].str.replace(r'\.0$', '', regex=True)
                 current_df['respondent_id'] = current_df['respondent_id'].replace(r'^\s*$', np.nan, regex=True).replace('nan', np.nan)
+                # Diese dropna-Zeile ist weiterhin in Ordnung.
                 current_df.dropna(subset=['respondent_id'], inplace=True)
+                
+                # Spezifische Typkonvertierungen können bleiben und sind gut.
                 if key == 'age' and 'age' in current_df.columns:
                     current_df['age'] = pd.to_numeric(current_df['age'], errors='coerce')
+                # Du könntest hier ähnliche Konvertierungen für andere numerische Spalten hinzufügen,
+                # falls das nicht schon im jeweiligen Preprocessing-Skript passiert:
+                if key == 'household_size' and 'household_size' in current_df.columns:
+                    current_df['household_size'] = pd.to_numeric(current_df['household_size'], errors='coerce')
+
             elif not current_df.empty:
                  print(f"WARNUNG [demographics.py]: Spalte 'respondent_id' nicht in {fname} gefunden.")
         except Exception as e:

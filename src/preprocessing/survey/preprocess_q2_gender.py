@@ -27,7 +27,8 @@ os.makedirs(PROCESSED_DIR, exist_ok=True)
 
 # Load the raw data
 raw_path = os.path.join(RAW_DIR, RAW_FILENAME)
-df_raw = pd.read_csv(raw_path, encoding='utf-8', sep=',')
+# KORRIGIERTER AUFRUF:
+df_raw = pd.read_csv(raw_path, encoding='utf-8', sep=',', header=0, skiprows=[1])
 
 # Extract respondent_id and the gender column
 GENDER_COL = 'Was ist Ihr Geschlecht?'

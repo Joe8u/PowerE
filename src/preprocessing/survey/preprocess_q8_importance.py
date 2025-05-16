@@ -39,7 +39,7 @@ def parse_rating(x: str) -> int:
 
 def preprocess_q8_importance_wide(raw_csv: str, out_csv: str):
     # 1) Einlesen mit flachem Header
-    df = pd.read_csv(raw_csv, header=0, dtype=str)
+    df = pd.read_csv(raw_csv, header=0, skiprows=[1], dtype=str)
 
     # 2) Fragetext identifizieren
     question = (
