@@ -24,7 +24,7 @@ def generate_3d_flexibility_surface_plot(
     df_survey_flex: pd.DataFrame,
     max_event_duration_h_on_plot: float = 30, # Maximale Dauer auf der Y-Achse des Plots
     incentive_steps: int = 11, # Anzahl der Anreizstufen (z.B. 11 für 0,5,10...50)
-    max_incentive_pct_on_plot: float = 50.0
+    max_incentive_pct_on_plot: float = 65.0
 ):
     """
     Generiert und zeigt einen 3D-Oberflächenplot der modellierten Teilnahmequote
@@ -121,7 +121,7 @@ def generate_3d_flexibility_surface_plot(
         # Diesen Wert müsstest du ggf. anpassen, nachdem du alle Plots gesehen hast,
         # um einen guten gemeinsamen Bereich für ALLE Geräte zu finden.
         COLOR_CMIN = 0 
-        COLOR_CMAX = 65 # Beispiel: Setze dies auf den globalen Maximalwert + Puffer yaxis_title zaxis_title xaxis_title
+        COLOR_CMAX = 100 # Beispiel: Setze dies auf den globalen Maximalwert + Puffer yaxis_title zaxis_title xaxis_title
         fig = go.Figure(data=[go.Surface(
             z=Z_raw_participation_rate, 
             x=X_incentives, 

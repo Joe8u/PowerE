@@ -25,7 +25,7 @@ _Q10_DEVICES = [
     "Fernseher und Entertainment-Systeme",
     "Bürogeräte",
     "Waschmaschine",
-    #"Staubsauger" #
+    "Staubsauger" 
 ]
 
 def load_q10_incentives_long() -> pd.DataFrame:

@@ -1,4 +1,5 @@
 # src/data_loader/lastprofile.py
+# Informationen aus https://data.sccer-jasm.ch/household-daily-load-curves/2020-02-03/?utm_source
 
 import pandas as pd
 from pathlib import Path
