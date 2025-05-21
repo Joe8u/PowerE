@@ -53,9 +53,9 @@ def preprocess_q10_incentive_wide(raw_csv: str, out_csv: str):
     pct_cols_found    = [c for c in all_cols if re.search(r' - Falls Ja, Stromkosten-Rabatt in Prozent$', c)]
 
     # 4) Geräte extrahieren und Staubsauger (6.) weglassen (oder anpassen, falls gewünscht)
-    devices    = [c.split(' - ')[0] for c in choice_cols_found][:5] # Nimmt die ersten 5 Geräte
-    choice_cols_to_use = choice_cols_found[:5]
-    pct_cols_to_use    = pct_cols_found[:5]
+    devices    = [c.split(' - ')[0] for c in choice_cols_found][:6] # Nimmt die ersten 5 Geräte
+    choice_cols_to_use = choice_cols_found[:6]
+    pct_cols_to_use    = pct_cols_found[:6]
 
     # Sicherstellen, dass wir für jedes Gerät ein Choice und ein Pct Paar haben
     if len(devices) != len(choice_cols_to_use) or len(devices) != len(pct_cols_to_use):

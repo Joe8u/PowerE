@@ -12,8 +12,8 @@ _Q9_DEVICES = [
     "Backofen und Herd",
     "Fernseher und Entertainment-Systeme",
     "Bürogeräte",
-    "Waschmaschine"
-    # "Staubsauger" - füge dies hinzu, wenn dein preprocess_q9_nonuse_wide.py es auch verarbeitet
+    "Waschmaschine",
+    "Staubsauger" 
 ]
 
 def load_q9_nonuse_long() -> pd.DataFrame:
